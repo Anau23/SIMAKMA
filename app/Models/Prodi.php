@@ -11,48 +11,38 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class User
+ * Class Prodi
  * 
  * @property int $id
+ * @property int $fakultas_id
  * @property string $name
- * @property string $email
- * @property Carbon|null $email_verified_at
- * @property string $password
- * @property string|null $phone
- * @property string $status
- * @property string $role
- * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
+ * @property Fakulta $fakulta
  * @property Collection|Dosen[] $dosens
  * @property Collection|Mahasiswa[] $mahasiswas
+ * @property Collection|Matkul[] $matkuls
  *
  * @package App\Models
  */
-class User extends Model
+class Prodi extends Model
 {
-	protected $table = 'users';
+	protected $table = 'prodis';
 
 	protected $casts = [
-		'email_verified_at' => 'datetime'
-	];
-
-	protected $hidden = [
-		'password',
-		'remember_token'
+		'fakultas_id' => 'int'
 	];
 
 	protected $fillable = [
-		'name',
-		'email',
-		'email_verified_at',
-		'password',
-		'phone',
-		'status',
-		'role',
-		'remember_token'
+		'fakultas_id',
+		'name'
 	];
+
+	public function fakulta()
+	{
+		return $this->belongsTo(Fakulta::class, 'fakultas_id');
+	}
 
 	public function dosens()
 	{
@@ -62,5 +52,10 @@ class User extends Model
 	public function mahasiswas()
 	{
 		return $this->hasMany(Mahasiswa::class);
+	}
+
+	public function matkuls()
+	{
+		return $this->hasMany(Matkul::class);
 	}
 }
