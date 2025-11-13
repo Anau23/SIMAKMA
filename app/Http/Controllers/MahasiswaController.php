@@ -14,7 +14,7 @@ class MahasiswaController extends Controller
     {
         $search = $request->input('search');
 
-        $query = Mahasiswa::with(['user', 'dosenWali', 'prodi']);
+        $query = Mahasiswa::with(['user', 'dosen', 'prodi']);
 
         if ($search) {
             $query->whereHas('user', function ($q) use ($search) {
@@ -45,9 +45,9 @@ class MahasiswaController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8',
-            'nim' => 'required|unique:mahasiswa',
+            'nim' => 'required|unique:mahasiswas',
             'doswal_id' => 'required|exists:dosen,id',
-            'prodi_id' => 'required|exists:prodi,id',
+            'prodi_id' => 'required|exists:prodis,id',
             'angkatan' => 'required|digits:4',
             'alamat' => 'required',
             'no_telp' => 'required',

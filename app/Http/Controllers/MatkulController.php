@@ -47,12 +47,12 @@ class MatkulController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode_mk' => 'required|unique:matkul',
+            'kode_mk' => 'required|unique:matkuls',
             'name' => 'required',
             'sks' => 'required|integer',
             'semester' => 'required|integer',
-            'prodi_id' => 'required|exists:prodi,id',
-            'dosen_id' => 'required|exists:dosen,id',
+            'prodi_id' => 'required|exists:prodis,id',
+            'dosen_id' => 'required|exists:dosens,id',
         ]);
 
         Matkul::create($request->all());
@@ -75,12 +75,12 @@ class MatkulController extends Controller
     public function update(Request $request, Matkul $matkul)
     {
         $request->validate([
-            'kode_mk' => 'required|unique:matkul,kode_mk,' . $matkul->id,
+            'kode_mk' => 'required|unique:matkuls,kode_mk,' . $matkul->id,
             'name' => 'required',
             'sks' => 'required|integer',
             'semester' => 'required|integer',
-            'prodi_id' => 'required|exists:prodi,id',
-            'dosen_id' => 'required|exists:dosen,id',
+            'prodi_id' => 'required|exists:prodis,id',
+            'dosen_id' => 'required|exists:dosens,id',
         ]);
 
         $matkul->update($request->all());

@@ -199,7 +199,7 @@ new class extends Component {
                     </svg>
                 </button>
                 <div x-show="activeDropdown === 'rencana'" class="space-y-1 bg-gray-700" x-transition>
-                    <a href="#"
+                    <a href="{{ route('mahasiswa.krs.index') }}"
                         class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
                         <!-- Entry KRS Icon -->
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
