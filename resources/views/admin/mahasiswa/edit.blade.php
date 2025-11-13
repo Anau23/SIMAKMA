@@ -55,4 +55,13 @@
                 </div>
 
                 {{-- Tombol --}}
-                <div class="fl
+                <div class="flex justify-end mt-6">
+                    <a href="{{ route('admin.mahasiswa.index') }}"
+                        class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 mr-2">Batal</a>
+                    <button type="submit"
+                        class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</x-app-layout>
