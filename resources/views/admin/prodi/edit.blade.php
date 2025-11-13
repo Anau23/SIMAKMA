@@ -22,7 +22,7 @@
                     <select name="fakultas_id" required
                         class="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                         <option value="">-- Pilih Fakultas --</option>
-                        @foreach($fakultas as $f)
+                        @foreach ($fakultas as $f)
                             <option value="{{ $f->id }}" {{ $prodi->fakultas_id == $f->id ? 'selected' : '' }}>
                                 {{ $f->name }}
                             </option>
@@ -32,8 +32,9 @@
 
                 <div class="flex justify-end">
                     <a href="{{ route('admin.prodi.index') }}"
-                        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">Batal</a>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md">Perbarui</button>
+                        class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 mr-2">Batal</a>
+                    <button type="submit"
+                        class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Perbarui</button>
                 </div>
             </form>
         </div>

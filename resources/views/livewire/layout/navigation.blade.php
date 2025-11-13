@@ -144,6 +144,17 @@ new class extends Component {
                             </svg>
                             Matkul
                         </a>
+                        <a href="{{ route('admin.fakultas.index') }}"
+                            class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
+                            <!-- Fakultas Icon (building) -->
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10.5L12 6l9 4.5" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v11.5" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15.5v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 13v2M12 13v2M17 13v2" />
+                            </svg>
+                            Fakultas
+                        </a>
                         <a href="{{ route('admin.prodi.index') }}"
                             class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
                             <!-- Prodi Icon -->

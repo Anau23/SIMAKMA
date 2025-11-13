@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="py-8 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-3xl mx-auto bg-white shadow rounded-lg p-6">
+        <div class="max-w-4xl mx-auto bg-white shadow rounded-lg p-6">
             <form action="{{ route('admin.mahasiswa.update', $mahasiswa->id) }}" method="POST" class="space-y-4">
                 @csrf
                 @method('PUT')
@@ -16,26 +16,43 @@
                     <label class="block text-gray-700 font-medium mb-1">NIM</label>
                     <input type="text" name="nim" value="{{ old('nim', $mahasiswa->nim) }}"
                         class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                        required>
+                        placeholder="Masukkan NIM" required>
                     @error('nim') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 {{-- Nama --}}
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Nama Mahasiswa</label>
-                    <input type="text" name="name" value="{{ old('name', $mahasiswa->name) }}"
+                    <input type="text" name="name" value="{{ old('name', $mahasiswa->user->name) }}"
                         class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                        required>
+                        placeholder="Masukkan nama mahasiswa" required>
                     @error('name') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 {{-- Email --}}
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Email</label>
-                    <input type="email" name="email" value="{{ old('email', $mahasiswa->email) }}"
+                    <input type="email" name="email" value="{{ old('email', $mahasiswa->user->email) }}"
+                        class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Masukkan email mahasiswa" required>
+                    @error('email') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                {{-- Dosen Wali --}}
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Dosen Wali</label>
+                    <select name="doswal_id"
                         class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                         required>
-                    @error('email') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
+                        <option value="">-- Pilih Dosen Wali --</option>
+                        @foreach ($dosen as $d)
+                            <option value="{{ $d->id }}"
+                                {{ old('doswal_id', $mahasiswa->doswal_id) == $d->id ? 'selected' : '' }}>
+                                {{ $d->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('doswal_id') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 {{-- Program Studi --}}
@@ -46,7 +63,8 @@
                         required>
                         <option value="">-- Pilih Prodi --</option>
                         @foreach ($prodi as $p)
-                            <option value="{{ $p->id }}" {{ old('prodi_id', $mahasiswa->prodi_id) == $p->id ? 'selected' : '' }}>
+                            <option value="{{ $p->id }}"
+                                {{ old('prodi_id', $mahasiswa->prodi_id) == $p->id ? 'selected' : '' }}>
                                 {{ $p->name }}
                             </option>
                         @endforeach
@@ -54,12 +72,70 @@
                     @error('prodi_id') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
 
+                {{-- Angkatan & Tahun Akademik --}}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Angkatan</label>
+                        <input type="text" name="angkatan" value="{{ old('angkatan', $mahasiswa->angkatan) }}"
+                            class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Contoh: 2022" required>
+                        @error('angkatan') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Tahun Akademik</label>
+                        <input type="text" name="tahun_akademik" value="{{ old('tahun_akademik', $mahasiswa->tahun_akademik) }}"
+                            class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Contoh: 2024" required>
+                        @error('tahun_akademik') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+
+                {{-- Alamat --}}
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Alamat</label>
+                    <textarea name="alamat" rows="2"
+                        class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Masukkan alamat lengkap" required>{{ old('alamat', $mahasiswa->alamat) }}</textarea>
+                    @error('alamat') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                {{-- No. Telepon --}}
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">No. Telepon</label>
+                    <input type="text" name="no_telp" value="{{ old('no_telp', $mahasiswa->no_telp) }}"
+                        class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Masukkan nomor telepon" required>
+                    @error('no_telp') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                {{-- Jenis Kelamin & Agama --}}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Jenis Kelamin</label>
+                        <select name="gender"
+                            class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            required>
+                            <option value="">-- Pilih Jenis Kelamin --</option>
+                            <option value="L" {{ old('gender', $mahasiswa->gender) == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                            <option value="P" {{ old('gender', $mahasiswa->gender) == 'P' ? 'selected' : '' }}>Perempuan</option>
+                        </select>
+                        @error('gender') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Agama</label>
+                        <input type="text" name="religion" value="{{ old('religion', $mahasiswa->religion) }}"
+                            class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Masukkan agama" required>
+                        @error('religion') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+
                 {{-- Tombol --}}
                 <div class="flex justify-end mt-6">
                     <a href="{{ route('admin.mahasiswa.index') }}"
                         class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 mr-2">Batal</a>
                     <button type="submit"
-                        class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600">Update</button>
+                        class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Perbarui</button>
                 </div>
             </form>
         </div>

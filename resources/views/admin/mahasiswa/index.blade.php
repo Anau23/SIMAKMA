@@ -41,21 +41,25 @@
                                 <td class="border px-3 py-2">{{ $m->user->name }}</td>
                                 <td class="border px-3 py-2">{{ $m->nim }}</td>
                                 <td class="border px-3 py-2">{{ $m->prodi->name ?? '-' }}</td>
-                                <td class="border px-3 py-2">{{ $m->dosenWali->nama_dosen ?? '-' }}</td>
+                                <td class="border px-3 py-2">{{ $m->dosen->name ?? '-' }}</td>
                                 <td class="border px-3 py-2 text-center">
-                                    <a href="{{ route('admin.mahasiswa.edit', $m->id) }}"
-                                        class="px-3 py-1 bg-yellow-400 text-white rounded hover:bg-yellow-500">Edit</a>
-                                    <form action="{{ route('admin.mahasiswa.destroy', $m->id) }}" method="POST" class="inline-block" id="delete-form-{{ $m->id }}">
+                                    <button
+                                        class="px-3 py-1 bg-yellow-400 text-white rounded hover:bg-yellow-500 text-sm">
+                                        <a href="{{ route('admin.mahasiswa.edit', $m->id) }}">Edit</a>
+                                    </button>
+                                    <form action="{{ route('admin.mahasiswa.destroy', $m->id) }}" method="POST"
+                                        class="inline-block" id="delete-form-{{ $m->id }}">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button"
-                                            onclick="confirmDelete({{ $m->id }})"
+                                        <button type="button" onclick="confirmDelete({{ $m->id }})"
                                             class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">Hapus</button>
                                     </form>
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="6" class="text-center py-3 text-gray-500">Tidak ada data</td></tr>
+                            <tr>
+                                <td colspan="6" class="text-center py-3 text-gray-500">Tidak ada data</td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -70,13 +74,14 @@
                         <p class="text-sm text-gray-600">Prodi: {{ $m->prodi->name ?? '-' }}</p>
                         <p class="text-sm text-gray-600 mb-2">Dosen Wali: {{ $m->dosenWali->nama_dosen ?? '-' }}</p>
                         <div class="flex gap-2">
-                            <a href="{{ route('admin.mahasiswa.edit', $m->id) }}"
-                                class="px-3 py-1 bg-yellow-400 text-white rounded hover:bg-yellow-500 text-sm">Edit</a>
-                            <form action="{{ route('admin.mahasiswa.destroy', $m->id) }}" method="POST" id="delete-form-mobile-{{ $m->id }}">
+                            <button class="px-3 py-1 bg-yellow-400 text-white rounded hover:bg-yellow-500 text-sm">
+                                <a href="{{ route('admin.mahasiswa.edit', $m->id) }}">Edit</a>
+                            </button>
+                            <form action="{{ route('admin.mahasiswa.destroy', $m->id) }}" method="POST"
+                                id="delete-form-mobile-{{ $m->id }}">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button"
-                                    onclick="confirmDelete({{ $m->id }}, true)"
+                                <button type="button" onclick="confirmDelete({{ $m->id }}, true)"
                                     class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm">Hapus</button>
                             </form>
                         </div>

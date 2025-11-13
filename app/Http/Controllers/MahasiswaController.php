@@ -7,6 +7,8 @@ use App\Models\Mahasiswa;
 use App\Models\User;
 use App\Models\Dosen;
 use App\Models\Prodi;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class MahasiswaController extends Controller
 {
@@ -14,7 +16,7 @@ class MahasiswaController extends Controller
     {
         $search = $request->input('search');
 
-        $query = Mahasiswa::with(['user', 'dosenWali', 'prodi']);
+        $query = Mahasiswa::with(['user', 'dosen', 'prodi']);
 
         if ($search) {
             $query->whereHas('user', function ($q) use ($search) {
@@ -41,13 +43,13 @@ class MahasiswaController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8',
-            'nim' => 'required|unique:mahasiswa',
-            'doswal_id' => 'required|exists:dosen,id',
-            'prodi_id' => 'required|exists:prodi,id',
+            'nim' => 'required|unique:mahasiswas',
+            'doswal_id' => 'required|exists:dosens,id',
+            'prodi_id' => 'required|exists:prodis,id',
             'angkatan' => 'required|digits:4',
             'alamat' => 'required',
             'no_telp' => 'required',
@@ -56,10 +58,22 @@ class MahasiswaController extends Controller
             'tahun_akademik' => 'required|digits:4',
         ]);
 
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errorMessage = "Tambah data gagal. periksa kembali data yang diinput.<br><ul>";
+            foreach ($errors as $error) {
+                $errorMessage .= "<li>$error</li>";
+            }
+            $errorMessage .= "</ul>";
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $errorMessage);
+        }
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => Hash::make($request->password),
             'role' => 'mahasiswa',
             'status' => 'aktif'
         ]);
@@ -89,12 +103,12 @@ class MahasiswaController extends Controller
 
     public function update(Request $request, Mahasiswa $mahasiswa)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users,email,' . $mahasiswa->user_id,
-            'nim' => 'required|unique:mahasiswa,nim,' . $mahasiswa->id,
-            'doswal_id' => 'required|exists:dosen,id',
-            'prodi_id' => 'required|exists:prodi,id',
+            'nim' => 'required|unique:mahasiswas,nim,' . $mahasiswa->id,
+            'doswal_id' => 'required|exists:dosens,id',
+            'prodi_id' => 'required|exists:prodis,id',
             'angkatan' => 'required|digits:4',
             'alamat' => 'required',
             'no_telp' => 'required',
@@ -102,6 +116,18 @@ class MahasiswaController extends Controller
             'religion' => 'required',
             'tahun_akademik' => 'required|digits:4',
         ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errorMessage = "Update data gagal. periksa kembali data yang diinput.<br><ul>";
+            foreach ($errors as $error) {
+                $errorMessage .= "<li>$error</li>";
+            }
+            $errorMessage .= "</ul>";
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $errorMessage);
+        }
 
         $mahasiswa->user->update([
             'name' => $request->name,

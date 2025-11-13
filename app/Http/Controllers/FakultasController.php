@@ -4,39 +4,49 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Fakulta;
+use Illuminate\Support\Facades\Validator;
 
 class FakultasController extends Controller
 {
-
-    public function index()
+    public function index(Request $request)
     {
-        $fakultas = Fakulta::all();
-        return view('admin.fakultas.index', compact('fakultas'));
-    }
+        $search = $request->input('search');
 
+        $fakultas = Fakulta::when($search, function ($query, $search) {
+            $query->where('name', 'like', "%{$search}%");
+        })
+            ->orderBy('name', 'asc')
+            ->paginate(10);
+
+        return view('admin.fakultas.index', compact('fakultas', 'search'));
+    }
 
     public function create()
     {
         return view('admin.fakultas.create');
     }
 
-
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255|unique:fakultas,name',
         ]);
 
-        Fakulta::create($request->all());
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errorMessage = "Tambah data gagal. periksa kembali data yang diinput.<br><ul>";
+            foreach ($errors as $error) {
+                $errorMessage .= "<li>$error</li>";
+            }
+            $errorMessage .= "</ul>";
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $errorMessage);
+        }
 
-        return redirect()->route('admin.fakultas.index')
-            ->with('success', 'Fakultas berhasil ditambahkan.');
-    }
+        Fakulta::create($request->only('name'));
 
-
-    public function show(Fakulta $fakulta)
-    {
-        return view('admin.fakultas.show', compact('fakulta'));
+        return redirect()->route('admin.fakultas.index')->with('success', 'Fakultas berhasil ditambahkan.');
     }
 
     public function edit(Fakulta $fakulta)
@@ -46,14 +56,25 @@ class FakultasController extends Controller
 
     public function update(Request $request, Fakulta $fakulta)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255|unique:fakultas,name,' . $fakulta->id,
         ]);
 
-        $fakulta->update($request->all());
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errorMessage = "Update data gagal. periksa kembali data yang diinput.<br><ul>";
+            foreach ($errors as $error) {
+                $errorMessage .= "<li>$error</li>";
+            }
+            $errorMessage .= "</ul>";
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $errorMessage);
+        }
 
-        return redirect()->route('admin.fakultas.index')
-            ->with('success', 'Fakultas berhasil diupdate.');
+        $fakulta->update($request->only('name'));
+
+        return redirect()->route('admin.fakultas.index')->with('success', 'Fakultas berhasil diupdate.');
     }
 
     public function destroy(Fakulta $fakulta)
@@ -65,7 +86,6 @@ class FakultasController extends Controller
 
         $fakulta->delete();
 
-        return redirect()->route('admin.fakultas.index')
-            ->with('success', 'Fakultas berhasil dihapus.');
+        return redirect()->route('admin.fakultas.index')->with('success', 'Fakultas berhasil dihapus.');
     }
 }

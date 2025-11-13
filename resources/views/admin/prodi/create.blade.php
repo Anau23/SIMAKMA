@@ -29,8 +29,8 @@
 
                 <div class="flex justify-end">
                     <a href="{{ route('admin.prodi.index') }}"
-                        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">Batal</a>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md">Simpan</button>
+                        class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 mr-2">Batal</a>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Simpan</button>
                 </div>
             </form>
         </div>
