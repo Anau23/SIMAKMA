@@ -44,9 +44,9 @@ class Mahasiswa extends Model
 		'user_id' => 'int',
 		'doswal_id' => 'int',
 		'prodi_id' => 'int',
-		'angkatan' => 'datetime',
+		'angkatan' => 'string',
 		'nim' => 'int',
-		'tahun_akademik' => 'datetime'
+		'tahun_akademik' => 'string'
 	];
 
 	protected $fillable = [

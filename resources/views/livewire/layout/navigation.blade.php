@@ -7,7 +7,7 @@ new class extends Component {
     public function logout(Logout $logout): void
     {
         $logout();
-        $this->redirect('/', navigate: true);
+        $this->redirect('/login', navigate: true);
     }
 };
 ?>
@@ -28,13 +28,6 @@ new class extends Component {
                             d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
-
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" wire:navigate>
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                    </a>
-                </div>
 
                 <!-- Top Navigation -->
                 <div class="hidden sm:flex space-x-8 sm:-my-px sm:ms-10">
@@ -64,7 +57,7 @@ new class extends Component {
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')" wire:navigate>
+                        <x-dropdown-link :href="route('profile')" wire:navigate>
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
@@ -89,13 +82,18 @@ new class extends Component {
 
         <!-- Sidebar Header -->
         <div class="flex items-center justify-between px-4 py-3 border-b border-gray-700">
-            <h2 class="text-lg font-semibold">SIMAKMA</h2>
+            <div class="flex items-center space-x-2">
+                <img src="{{ asset('assets/img/logo2.jpg') }}" alt="Logo SIMAKMA" class="w-8 h-8 rounded-full shadow-md">
+                <h2 class="text-lg font-semibold">SIMAKMA</h2>
+            </div>
+
             <button @click="sidebarOpen = false" class="text-gray-400 hover:text-white focus:outline-none">
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
+
 
         <!-- Sidebar Links -->
         <nav class="mt-4 space-y-1">
@@ -194,9 +192,9 @@ new class extends Component {
                         Rencana Studi
                     </div>
                     <!-- Dropdown Arrow -->
-                    <svg :class="{ 'rotate-180': activeDropdown === 'rencana' }"
-                        class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
+                    <svg :class="{'rotate-180': activeDropdown === 'rencana'}"
+                        class="w-4 h-4 transition-transform duration-200"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                 </button>
@@ -230,9 +228,9 @@ new class extends Component {
                         Informasi Akademik
                     </div>
                     <!-- Dropdown Arrow -->
-                    <svg :class="{ 'rotate-180': activeDropdown === 'info' }"
-                        class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
+                    <svg :class="{'rotate-180': activeDropdown === 'info'}"
+                        class="w-4 h-4 transition-transform duration-200"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                 </button>
@@ -253,7 +251,7 @@ new class extends Component {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                         </svg>
-                        DPA
+                        Daftar Prestasi Akademik
                     </a>
                     <a href="#"
                         class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
@@ -262,7 +260,7 @@ new class extends Component {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        KHS
+                        Kartu Hasil Studi
                     </a>
                     <a href="#"
                         class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
@@ -273,7 +271,7 @@ new class extends Component {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
                         </svg>
-                        Nilai
+                        Nilai Mata Kuliah
                     </a>
                 </div>
             </div>
@@ -292,7 +290,6 @@ new class extends Component {
             <!-- Logout -->
             <button wire:click="logout"
                 class="flex items-center w-full text-left px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200">
-                <!-- Logout Icon -->
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
