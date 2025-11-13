@@ -83,7 +83,8 @@ new class extends Component {
         <!-- Sidebar Header -->
         <div class="flex items-center justify-between px-4 py-3 border-b border-gray-700">
             <div class="flex items-center space-x-2">
-                <img src="{{ asset('assets/img/logo2.jpg') }}" alt="Logo SIMAKMA" class="w-8 h-8 rounded-full shadow-md">
+                <img src="{{ asset('assets/img/logo2.jpg') }}" alt="Logo SIMAKMA"
+                    class="w-8 h-8 rounded-full shadow-md">
                 <h2 class="text-lg font-semibold">SIMAKMA</h2>
             </div>
 
@@ -111,7 +112,8 @@ new class extends Component {
 
             @if (Auth::user()->isAdmin())
                 <div>
-                    <button @click="activeDropdown === 'master-data' ? activeDropdown = null : activeDropdown = 'master-data'"
+                    <button
+                        @click="activeDropdown === 'master-data' ? activeDropdown = null : activeDropdown = 'master-data'"
                         class="flex items-center justify-between w-full px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none transition-colors duration-200">
                         <div class="flex items-center">
                             <!-- Rencana Studi Icon -->
@@ -148,10 +150,14 @@ new class extends Component {
                             class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
                             <!-- Fakultas Icon (building) -->
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10.5L12 6l9 4.5" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v11.5" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15.5v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 13v2M12 13v2M17 13v2" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 10.5L12 6l9 4.5" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6v11.5" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 15.5v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 13v2M12 13v2M17 13v2" />
                             </svg>
                             Fakultas
                         </a>
@@ -159,8 +165,10 @@ new class extends Component {
                             class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
                             <!-- Prodi Icon -->
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422A12.083 12.083 0 0118.825 17.057 11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.825-2.999 12.083 12.083 0 01.665-6.479L12 14z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 14l9-5-9-5-9 5 9 5z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 14l6.16-3.422A12.083 12.083 0 0118.825 17.057 11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.825-2.999 12.083 12.083 0 01.665-6.479L12 14z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14v6" />
                             </svg>
                             Prodi
@@ -182,121 +190,157 @@ new class extends Component {
                                     d="M12 14l9-5-9-5-9 5 9 5z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 14l6.16-3.422A12.083 12.083 0 0118.825 17.057 11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.825-2.999A12.083 12.083 0 015.84 10.578L12 14z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20v-6" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 20v-6" />
                             </svg>
                             Mahasiswa
                         </a>
                     </div>
                 </div>
+            @elseif (Auth::user()->isDosen())
+                <!-- Rencana Studi -->
+                <div>
+                    <button @click="activeDropdown === 'rencana' ? activeDropdown = null : activeDropdown = 'rencana'"
+                        class="flex items-center justify-between w-full px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none transition-colors duration-200">
+                        <div class="flex items-center">
+                            <!-- Rencana Studi Icon -->
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                            Rencana Studi
+                        </div>
+                        <!-- Dropdown Arrow -->
+                        <svg :class="{ 'rotate-180': activeDropdown === 'rencana' }"
+                            class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="activeDropdown === 'rencana'" class="space-y-1 bg-gray-700" x-transition>
+                        <a href="{{ route('dosen.krs.index') }}"
+                            class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
+                            <!-- Entry KRS Icon -->
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Kelola KRS
+                        </a>
+                    </div>
+                </div>
+            @else
+                <!-- Rencana Studi -->
+                <div>
+                    <button @click="activeDropdown === 'rencana' ? activeDropdown = null : activeDropdown = 'rencana'"
+                        class="flex items-center justify-between w-full px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none transition-colors duration-200">
+                        <div class="flex items-center">
+                            <!-- Rencana Studi Icon -->
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                            Rencana Studi
+                        </div>
+                        <!-- Dropdown Arrow -->
+                        <svg :class="{ 'rotate-180': activeDropdown === 'rencana' }"
+                            class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="activeDropdown === 'rencana'" class="space-y-1 bg-gray-700" x-transition>
+                        <a href="{{ route('mahasiswa.krs.index') }}"
+                            class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
+                            <!-- Entry KRS Icon -->
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Entry KRS
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Informasi Akademik -->
+                <div>
+                    <button @click="activeDropdown === 'info' ? activeDropdown = null : activeDropdown = 'info'"
+                        class="flex items-center justify-between w-full px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none transition-colors duration-200">
+                        <div class="flex items-center">
+                            <!-- Informasi Akademik Icon -->
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 14l9-5-9-5-9 5 9 5z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
+                            </svg>
+                            Informasi Akademik
+                        </div>
+                        <!-- Dropdown Arrow -->
+                        <svg :class="{ 'rotate-180': activeDropdown === 'info' }"
+                            class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="activeDropdown === 'info'" class="space-y-1 bg-gray-700" x-transition>
+                        <a href="#"
+                            class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
+                            <!-- Jadwal Kuliah Icon -->
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            Jadwal Kuliah
+                        </a>
+                        <a href="#"
+                            class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
+                            <!-- DPA Icon -->
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                            Daftar Prestasi Akademik
+                        </a>
+                        <a href="#"
+                            class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
+                            <!-- KHS Icon -->
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Kartu Hasil Studi
+                        </a>
+                        <a href="#"
+                            class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
+                            <!-- Nilai Icon -->
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                            </svg>
+                            Nilai Mata Kuliah
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Biodata Mahasiswa -->
+                <a href="#"
+                    class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200">
+                    <!-- Biodata Icon -->
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    Biodata Mahasiswa
+                </a>
             @endif
-
-            <!-- Rencana Studi -->
-            <div>
-                <button @click="activeDropdown === 'rencana' ? activeDropdown = null : activeDropdown = 'rencana'"
-                    class="flex items-center justify-between w-full px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none transition-colors duration-200">
-                    <div class="flex items-center">
-                        <!-- Rencana Studi Icon -->
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                        </svg>
-                        Rencana Studi
-                    </div>
-                    <!-- Dropdown Arrow -->
-                    <svg :class="{'rotate-180': activeDropdown === 'rencana'}"
-                        class="w-4 h-4 transition-transform duration-200"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-                <div x-show="activeDropdown === 'rencana'" class="space-y-1 bg-gray-700" x-transition>
-                    <a href="{{ route('mahasiswa.krs.index') }}"
-                        class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
-                        <!-- Entry KRS Icon -->
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        Entry KRS
-                    </a>
-                </div>
-            </div>
-
-            <!-- Informasi Akademik -->
-            <div>
-                <button @click="activeDropdown === 'info' ? activeDropdown = null : activeDropdown = 'info'"
-                    class="flex items-center justify-between w-full px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none transition-colors duration-200">
-                    <div class="flex items-center">
-                        <!-- Informasi Akademik Icon -->
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 14l9-5-9-5-9 5 9 5z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
-                        </svg>
-                        Informasi Akademik
-                    </div>
-                    <!-- Dropdown Arrow -->
-                    <svg :class="{'rotate-180': activeDropdown === 'info'}"
-                        class="w-4 h-4 transition-transform duration-200"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-                <div x-show="activeDropdown === 'info'" class="space-y-1 bg-gray-700" x-transition>
-                    <a href="#"
-                        class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
-                        <!-- Jadwal Kuliah Icon -->
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        Jadwal Kuliah
-                    </a>
-                    <a href="#"
-                        class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
-                        <!-- DPA Icon -->
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                        Daftar Prestasi Akademik
-                    </a>
-                    <a href="#"
-                        class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
-                        <!-- KHS Icon -->
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        Kartu Hasil Studi
-                    </a>
-                    <a href="#"
-                        class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
-                        <!-- Nilai Icon -->
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-                        </svg>
-                        Nilai Mata Kuliah
-                    </a>
-                </div>
-            </div>
-
-            <!-- Biodata Mahasiswa -->
-            <a href="#"
-                class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200">
-                <!-- Biodata Icon -->
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                Biodata Mahasiswa
-            </a>
 
             <!-- Logout -->
             <button wire:click="logout"

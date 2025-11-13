@@ -10,7 +10,7 @@ use App\Http\Controllers\MatkulController as AdminMatkul;
 use App\Http\Controllers\KRSController as AdminKRS;
 use App\Http\Controllers\FakultasController as AdminFakultas;
 use App\Http\Controllers\DashboardController as DosenDashboard;
-use App\Http\Controllers\KRSController as DosenKRS;
+use App\Http\Controllers\KRSDosenController as DosenKRS;
 use App\Http\Controllers\KelasController as AdminKelas;
 use App\Http\Controllers\DashboardController as MahasiswaDashboard;
 use App\Http\Controllers\KRSController as MahasiswaKRS;
@@ -73,8 +73,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 Route::middleware(['auth', 'role:dosen'])->prefix('dosen')->name('dosen.')->group(function () {
     Route::get('/dashboard', [DosenDashboard::class, 'index'])->name('dashboard');
     Route::get('/krs', [DosenKRS::class, 'index'])->name('krs.index');
-    Route::post('/krs/{krs}/approve', [DosenKRS::class, 'approve'])->name('krs.approve');
-    Route::post('/krs/{krs}/reject', [DosenKRS::class, 'reject'])->name('krs.reject');
+     Route::get('/krs/{mahasiswa_id}', [DosenKRS::class, 'show'])->name('dosen.krs.show');
+    Route::post('/krs/{id}/approve', [DosenKRS::class, 'approveKrs'])->name('krs.approve');
+    Route::post('/krs/{id}/reject', [DosenKRS::class, 'rejectKrs'])->name('krs.reject');
 });
 
 // Mahasiswa Routes
