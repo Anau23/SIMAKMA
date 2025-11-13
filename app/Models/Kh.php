@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Kh
- * 
+ *
  * @property int $id
  * @property int $mahasiswa_id
  * @property float $ips
@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $semester
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property Mahasiswa $mahasiswa
  *
  * @package App\Models
@@ -34,7 +34,6 @@ class Kh extends Model
 		'mahasiswa_id' => 'int',
 		'ips' => 'float',
 		'ips_ocr' => 'float',
-		'tahun_akademik' => 'datetime',
 		'semester' => 'int'
 	];
 
@@ -44,7 +43,8 @@ class Kh extends Model
 		'khs_file',
 		'ips_ocr',
 		'tahun_akademik',
-		'semester'
+		'semester',
+        'status_verifikasi'
 	];
 
 	public function mahasiswa()
