@@ -7,8 +7,10 @@ use App\Http\Controllers\MahasiswaController as AdminMahasiswa;
 use App\Http\Controllers\DosenController as AdminDosen;
 use App\Http\Controllers\MatkulController as AdminMatkul;
 use App\Http\Controllers\KRSController as AdminKRS;
+use App\Http\Controllers\FakultasController as AdminFakultas;
 use App\Http\Controllers\DashboardController as DosenDashboard;
 use App\Http\Controllers\KRSController as DosenKRS;
+use App\Http\Controllers\KelasController as AdminKelas;
 use App\Http\Controllers\DashboardController as MahasiswaDashboard;
 use App\Http\Controllers\KRSController as MahasiswaKRS;
 
@@ -23,7 +25,7 @@ use App\Http\Controllers\KRSController as MahasiswaKRS;
 |
 */
 
-Route::view('/', 'welcome');
+Route::view('/login', 'welcome');
 
 Route::get('/dashboard', function () {
     if (auth()->user()->isAdmin()) {
@@ -35,11 +37,15 @@ Route::get('/dashboard', function () {
     }
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+// Route::middleware('auth')->group(function () {
+//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+// });
+Route::view('/profile', 'profile')
+    ->middleware(['auth'])
+    ->name('profile');
+
 
 // Admin Routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -47,7 +53,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Mahasiswa Management
     Route::resource('/mahasiswa', AdminMahasiswa::class);
-
+    Route::resource('/fakultas', AdminFakultas::class);
+    Route::resource('/kelas', AdminKelas::class);
     // Dosen Management
     Route::resource('/dosen', AdminDosen::class);
 
