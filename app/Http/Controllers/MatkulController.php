@@ -6,12 +6,35 @@ use Illuminate\Http\Request;
 use App\Models\Matkul;
 use App\Models\Prodi;
 use App\Models\Dosen;
+
 class MatkulController extends Controller
 {
-       public function index()
+    public function index(Request $request)
     {
-        $matkul = Matkul::with(['prodi', 'dosen'])->get();
-        return view('admin.matkul.index', compact('matkul'));
+        $search = $request->input('search');
+
+        // Query dasar dengan relasi
+        $query = Matkul::with(['prodi', 'dosen']);
+
+        // Jika ada pencarian
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('kode_mk', 'like', '%' . $search . '%')
+                    ->orWhereHas('prodi', function ($q2) use ($search) {
+                        $q2->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('dosen', function ($q3) use ($search) {
+                        $q3->where('nama_dosen', 'like', '%' . $search . '%');
+                    });
+            });
+        }
+
+        // Pagination (10 item per halaman)
+        $matkul = $query->orderBy('kode_mk')->paginate(10);
+
+        // Kirim data ke view
+        return view('admin.matkul.index', compact('matkul', 'search'));
     }
 
     public function create()
