@@ -35,7 +35,7 @@
                 {{-- Jika Mahasiswa --}}
                 @elseif ($user->isMahasiswa())
                     @php
-                        $mhs = \App\Models\Mahasiswa::with(['doswal', 'prodi'])
+                        $mhs = \App\Models\Mahasiswa::with(['dosen', 'prodi'])
                             ->where('user_id', $user->id)
                             ->first();
                     @endphp
@@ -51,7 +51,7 @@
                                 </tr>
                                 <tr class="border-b">
                                     <th class="text-left p-3 bg-gray-100">Dosen Wali</th>
-                                    <td class="p-3">{{ $mhs->doswal->name ?? '-' }}</td>
+                                    <td class="p-3">{{ $mhs->dosen->name ?? '-' }}</td>
                                 </tr>
                                 <tr class="border-b">
                                     <th class="text-left p-3 bg-gray-100">Program Studi</th>
