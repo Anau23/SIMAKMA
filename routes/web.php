@@ -14,6 +14,7 @@ use App\Http\Controllers\KRSDosenController as DosenKRS;
 use App\Http\Controllers\KelasController as AdminKelas;
 use App\Http\Controllers\DashboardController as MahasiswaDashboard;
 use App\Http\Controllers\KRSController as MahasiswaKRS;
+use App\Http\Controllers\KHSController as MahasiswaKHS;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,32 +39,19 @@ Route::get('/dashboard', function () {
     }
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Route::middleware('auth')->group(function () {
-//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-// });
 Route::view('/profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-
 // Admin Routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
-
-    // Mahasiswa Management
     Route::resource('mahasiswa', AdminMahasiswa::class);
     Route::resource('/fakultas', AdminFakultas::class);
     Route::resource('/kelas', AdminKelas::class);
-    // Dosen Management
     Route::resource('/dosen', AdminDosen::class);
     Route::resource('/prodi', AdminProdi::class);
-
-    // Mata Kuliah Management
     Route::resource('/matkul', AdminMatkul::class);
-
-    // KRS Management
     Route::get('/krs', [AdminKRS::class, 'index'])->name('krs.index');
     Route::post('/krs/{krs}/approve', [AdminKRS::class, 'approve'])->name('krs.approve');
     Route::post('/krs/{krs}/reject', [AdminKRS::class, 'reject'])->name('krs.reject');
@@ -84,6 +72,8 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
     Route::get('/krs', [MahasiswaKRS::class, 'index'])->name('krs.index');
     Route::post('/krs', [MahasiswaKRS::class, 'store'])->name('krs.store');
     Route::delete('/krs/{krs}', [MahasiswaKRS::class, 'destroy'])->name('krs.destroy');
+    Route::resource('/khs', MahasiswaKHS::class);
+    Route::get('/khs/{kh}/download', [MahasiswaKHS::class, 'download'])->name('khs.download');
 });
 
 require __DIR__ . '/auth.php';

@@ -13,12 +13,9 @@ new class extends Component {
 ?>
 
 <nav x-data="{ open: false, sidebarOpen: false, activeDropdown: null }" class="bg-white border-b border-gray-100 relative">
-
-    <!-- Top Bar -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex items-center space-x-3">
-                <!-- Sidebar Toggle Button -->
                 <button @click="sidebarOpen = !sidebarOpen"
                     class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -28,16 +25,12 @@ new class extends Component {
                             d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
-
-                <!-- Top Navigation -->
                 <div class="hidden sm:flex space-x-8 sm:-my-px sm:ms-10">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
             </div>
-
-            <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -55,13 +48,10 @@ new class extends Component {
                             </div>
                         </button>
                     </x-slot>
-
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile')" wire:navigate>
                             {{ __('Profile') }}
                         </x-dropdown-link>
-
-                        <!-- Logout -->
                         <button wire:click="logout" class="w-full text-start">
                             <x-dropdown-link>
                                 {{ __('Log Out') }}
@@ -72,37 +62,27 @@ new class extends Component {
             </div>
         </div>
     </div>
-
-    <!-- Sidebar -->
     <div x-show="sidebarOpen" @click.away="sidebarOpen = false"
         class="fixed inset-y-0 left-0 w-64 bg-gray-800 text-white shadow-lg z-40 transform transition-transform duration-200"
         x-transition:enter="transition ease-out duration-200" x-transition:enter-start="-translate-x-full"
         x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full">
-
-        <!-- Sidebar Header -->
         <div class="flex items-center justify-between px-4 py-3 border-b border-gray-700">
             <div class="flex items-center space-x-2">
                 <img src="{{ asset('assets/img/logo2.jpg') }}" alt="Logo SIMAKMA"
                     class="w-8 h-8 rounded-full shadow-md">
                 <h2 class="text-lg font-semibold">SIMAKMA</h2>
             </div>
-
             <button @click="sidebarOpen = false" class="text-gray-400 hover:text-white focus:outline-none">
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
-
-
-        <!-- Sidebar Links -->
         <nav class="mt-4 space-y-1">
-            <!-- Dashboard -->
             <a href="{{ route('dashboard') }}"
                 class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200"
                 :class="{ 'bg-gray-700 text-white': window.location.pathname.includes('dashboard') }">
-                <!-- Dashboard Icon -->
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -116,7 +96,6 @@ new class extends Component {
                         @click="activeDropdown === 'master-data' ? activeDropdown = null : activeDropdown = 'master-data'"
                         class="flex items-center justify-between w-full px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none transition-colors duration-200">
                         <div class="flex items-center">
-                            <!-- Rencana Studi Icon -->
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 2C7.03 2 3 4 3 7v10c0 3 4.03 5 9 5s9-2 9-5V7c0-3-4.03-5-9-5z" />
@@ -127,7 +106,6 @@ new class extends Component {
                             </svg>
                             Master Data
                         </div>
-                        <!-- Dropdown Arrow -->
                         <svg :class="{ 'rotate-180': activeDropdown === 'master-data' }"
                             class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -137,7 +115,6 @@ new class extends Component {
                     <div x-show="activeDropdown === 'master-data'" class="space-y-1 bg-gray-700" x-transition>
                         <a href="{{ route('admin.matkul.index') }}"
                             class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
-                            <!-- Matkul Icon (book) -->
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
@@ -163,7 +140,6 @@ new class extends Component {
                         </a>
                         <a href="{{ route('admin.prodi.index') }}"
                             class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
-                            <!-- Prodi Icon -->
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 14l9-5-9-5-9 5 9 5z" />
@@ -175,7 +151,6 @@ new class extends Component {
                         </a>
                         <a href="{{ route('admin.dosen.index') }}"
                             class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
-                            <!-- Dosen Icon -->
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -184,7 +159,6 @@ new class extends Component {
                         </a>
                         <a href="{{ route('admin.mahasiswa.index') }}"
                             class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
-                            <!-- Mahasiswa Icon (graduation cap) -->
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 14l9-5-9-5-9 5 9 5z" />
