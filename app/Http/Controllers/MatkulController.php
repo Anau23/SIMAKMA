@@ -54,6 +54,8 @@ class MatkulController extends Controller
             'semester' => 'required|integer',
             'prodi_id' => 'required|exists:prodis,id',
             'dosen_id' => 'required|exists:dosens,id',
+            'prodi_id' => 'required|exists:prodis,id',
+            'dosen_id' => 'required|exists:dosens,id',
         ]);
 
         if ($validator->fails()) {
@@ -92,6 +94,8 @@ class MatkulController extends Controller
             'name' => 'required',
             'sks' => 'required|integer',
             'semester' => 'required|integer',
+            'prodi_id' => 'required|exists:prodis,id',
+            'dosen_id' => 'required|exists:dosens,id',
             'prodi_id' => 'required|exists:prodis,id',
             'dosen_id' => 'required|exists:dosens,id',
         ]);

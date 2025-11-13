@@ -53,7 +53,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
 
     // Mahasiswa Management
-    Route::resource('/mahasiswa', AdminMahasiswa::class);
+    Route::resource('mahasiswa', AdminMahasiswa::class);
     Route::resource('/fakultas', AdminFakultas::class);
     Route::resource('/kelas', AdminKelas::class);
     // Dosen Management
