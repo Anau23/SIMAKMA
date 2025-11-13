@@ -3,81 +3,131 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Matkul;
-use App\Models\Prodi;
+use App\Models\Mahasiswa;
+use App\Models\User;
 use App\Models\Dosen;
+use App\Models\Prodi;
 
-class MatkulController extends Controller
+class MahasiswaController extends Controller
 {
     public function index(Request $request)
     {
         $search = $request->input('search');
 
-        $query = Matkul::with(['prodi', 'dosen']);
+        $query = Mahasiswa::with(['user', 'dosenWali', 'prodi']);
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('kode_mk', 'like', '%' . $search . '%')
-                  ->orWhere('name', 'like', '%' . $search . '%')
-                  ->orWhereHas('prodi', fn($sub) => $sub->where('name', 'like', '%' . $search . '%'))
-                  ->orWhereHas('dosen', fn($sub) => $sub->where('nama_dosen', 'like', '%' . $search . '%'));
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('email', 'like', "%$search%");
+            })
+            ->orWhere('nim', 'like', "%$search%")
+            ->orWhereHas('prodi', function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%");
             });
         }
 
-        $matkul = $query->orderBy('kode_mk')->paginate(10);
+        $mahasiswa = $query->orderBy('nim')->paginate(10);
 
-        return view('admin.matkul.index', compact('matkul', 'search'));
+        return view('admin.mahasiswa.index', compact('mahasiswa', 'search'));
     }
 
     public function create()
     {
-        $prodi = Prodi::all();
         $dosen = Dosen::all();
-        return view('admin.matkul.create', compact('prodi', 'dosen'));
+        $prodi = Prodi::all();
+        return view('admin.mahasiswa.create', compact('dosen', 'prodi'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'kode_mk' => 'required|unique:matkul',
             'name' => 'required',
-            'sks' => 'required|integer',
-            'semester' => 'required|integer',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8',
+            'nim' => 'required|unique:mahasiswa',
+            'doswal_id' => 'required|exists:dosen,id',
             'prodi_id' => 'required|exists:prodi,id',
-            'dosen_id' => 'required|exists:dosen,id',
+            'angkatan' => 'required|digits:4',
+            'alamat' => 'required',
+            'no_telp' => 'required',
+            'gender' => 'required|in:L,P',
+            'religion' => 'required',
+            'tahun_akademik' => 'required|digits:4',
         ]);
 
-        Matkul::create($request->all());
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'role' => 'mahasiswa',
+            'status' => 'aktif'
+        ]);
 
-        return redirect()->route('admin.matkul.index')->with('success', 'Mata kuliah berhasil ditambahkan.');
+        Mahasiswa::create([
+            'user_id' => $user->id,
+            'doswal_id' => $request->doswal_id,
+            'prodi_id' => $request->prodi_id,
+            'nim' => $request->nim,
+            'angkatan' => $request->angkatan,
+            'alamat' => $request->alamat,
+            'no_telp' => $request->no_telp,
+            'gender' => $request->gender,
+            'religion' => $request->religion,
+            'tahun_akademik' => $request->tahun_akademik,
+        ]);
+
+        return redirect()->route('admin.mahasiswa.index')->with('success', 'Mahasiswa berhasil ditambahkan.');
     }
 
-    public function edit(Matkul $matkul)
+    public function edit(Mahasiswa $mahasiswa)
     {
-        $prodi = Prodi::all();
         $dosen = Dosen::all();
-        return view('admin.matkul.edit', compact('matkul', 'prodi', 'dosen'));
+        $prodi = Prodi::all();
+        return view('admin.mahasiswa.edit', compact('mahasiswa', 'dosen', 'prodi'));
     }
 
-    public function update(Request $request, Matkul $matkul)
+    public function update(Request $request, Mahasiswa $mahasiswa)
     {
         $request->validate([
-            'kode_mk' => 'required|unique:matkul,kode_mk,' . $matkul->id,
             'name' => 'required',
-            'sks' => 'required|integer',
-            'semester' => 'required|integer',
+            'email' => 'required|email|unique:users,email,' . $mahasiswa->user_id,
+            'nim' => 'required|unique:mahasiswa,nim,' . $mahasiswa->id,
+            'doswal_id' => 'required|exists:dosen,id',
             'prodi_id' => 'required|exists:prodi,id',
-            'dosen_id' => 'required|exists:dosen,id',
+            'angkatan' => 'required|digits:4',
+            'alamat' => 'required',
+            'no_telp' => 'required',
+            'gender' => 'required|in:L,P',
+            'religion' => 'required',
+            'tahun_akademik' => 'required|digits:4',
         ]);
 
-        $matkul->update($request->all());
+        $mahasiswa->user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
 
-        return redirect()->route('admin.matkul.index')->with('success', 'Mata kuliah berhasil diperbarui.');
+        $mahasiswa->update($request->only([
+            'doswal_id',
+            'prodi_id',
+            'nim',
+            'angkatan',
+            'alamat',
+            'no_telp',
+            'gender',
+            'religion',
+            'tahun_akademik'
+        ]));
+
+        return redirect()->route('admin.mahasiswa.index')->with('success', 'Mahasiswa berhasil diupdate.');
     }
 
-    public function destroy(Matkul $matkul)
+    public function destroy(Mahasiswa $mahasiswa)
     {
-        $matkul->delete();
-        return redirect()->route('admin.matkul.index')->with('success', 'Mata kuliah berhasil dihapus.');
+        $mahasiswa->user->delete();
+        $mahasiswa->delete();
+
+        return redirect()->route('admin.mahasiswa.index')->with('success', 'Mahasiswa berhasil dihapus.');
     }
 }
