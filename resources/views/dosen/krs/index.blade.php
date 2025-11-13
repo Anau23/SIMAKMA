@@ -27,6 +27,7 @@
                             <th class="border px-4 py-2 text-left">Nama Mahasiswa</th>
                             <th class="border px-4 py-2 text-left">NIM</th>
                             <th class="border px-4 py-2 text-left">Jumlah KRS</th>
+                            <th class="border px-4 py-2 text-left">Status KRS</th>
                             <th class="border px-4 py-2 text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -38,6 +39,33 @@
                                 <td class="border px-4 py-2">{{ $mahasiswa->user->name }}</td>
                                 <td class="border px-4 py-2">{{ $mahasiswa->nim }}</td>
                                 <td class="border px-4 py-2">{{ $list->count() }} matkul</td>
+                                <td class="border px-4 py-2 text-center">
+                                    @php
+                                        $statusList = $list->pluck('status')->unique();
+                                        if ($statusList->count() === 1) {
+                                            $status = $statusList->first();
+                                        } else {
+                                            $status = 'campuran';
+                                        }
+                                    @endphp
+
+                                    @if ($status === 'aktif')
+                                        <span
+                                            class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+                                            Disetujui
+                                        </span>
+                                    @elseif ($status === 'pending')
+                                        <span
+                                            class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">
+                                            Menunggu Persetujuan
+                                        </span>
+                                    @elseif ($status === 'ditolak')
+                                        <span
+                                            class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">
+                                            Ditolak
+                                        </span>
+                                    @endif
+                                </td>
                                 <td class="border px-4 py-2 text-center">
                                     <a href="{{ route('dosen.krs.show', $mahasiswa->id) }}"
                                         class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">Detail</a>
@@ -57,7 +85,36 @@
                 @forelse ($krs->groupBy('mahasiswa_id') as $list)
                     @php $mahasiswa = $list->first()->mahasiswa; @endphp
                     <div class="border rounded-lg p-4 shadow-sm">
-                        <h3 class="font-semibold text-gray-800">{{ $mahasiswa->user->name }}</h3>
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-semibold text-gray-800">{{ $mahasiswa->user->name }}</h3>
+
+                            @php
+                                $statusList = $list->pluck('status')->unique();
+                                if ($statusList->count() === 1) {
+                                    $status = $statusList->first();
+                                } else {
+                                    $status = 'campuran';
+                                }
+                            @endphp
+
+                            @if ($status === 'aktif')
+                                <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+                                    Disetujui
+                                </span>
+                            @elseif ($status === 'pending')
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">
+                                    Menunggu Persetujuan
+                                </span>
+                            @elseif ($status === 'ditolak')
+                                <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">
+                                    Ditolak
+                                </span>
+                            @else
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                                    Sebagian Disetujui
+                                </span>
+                            @endif
+                        </div>
                         <p class="text-gray-600 text-sm mb-1">NIM: {{ $mahasiswa->nim }}</p>
                         <p class="text-gray-600 text-sm mb-1">Jumlah KRS: {{ $list->count() }} matkul</p>
                         <a href="{{ route('dosen.krs.show', $mahasiswa->id) }}"

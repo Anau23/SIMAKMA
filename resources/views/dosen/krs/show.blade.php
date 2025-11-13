@@ -25,8 +25,9 @@
                             <td class="border px-4 py-2">{{ $k->matkul->name ?? '-' }}</td>
                             <td class="border px-4 py-2">{{ $k->matkul->sks ?? '-' }}</td>
                             <td class="border px-4 py-2 text-center">
-                                <span class="px-2 py-1 rounded text-white
-                                    {{ $k->status === 'disetujui' ? 'bg-green-600' : ($k->status === 'ditolak' ? 'bg-red-500' : 'bg-gray-500') }}">
+                                <span
+                                    class="px-2 py-1 rounded text-white
+                                    {{ $k->status === 'aktif' ? 'bg-green-600' : ($k->status === 'ditolak' ? 'bg-red-500' : 'bg-gray-500') }}">
                                     {{ ucfirst($k->status) }}
                                 </span>
                             </td>
@@ -35,19 +36,24 @@
                 </tbody>
             </table>
 
-            <div class="mt-4 text-right">
-                <form action="{{ route('dosen.krs.approve', $mahasiswa->id) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <button class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
-                        Tolak KRS
-                    </button>
-                </form>
+            <div class="mt-4 flex justify-end space-x-3">
                 <form action="{{ route('dosen.krs.reject', $mahasiswa->id) }}" method="POST">
                     @csrf
                     @method('PUT')
-                    <button class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-                        Validasi KRS
+                    <button type="submit" @disabled($k->status == 'aktif')
+                        class="px-4 py-2 rounded text-white transition duration-150
+                {{ $k->status == 'aktif' ? 'bg-gray-400 cursor-not-allowed opacity-70' : 'bg-red-600 hover:bg-red-700' }}">
+                        <i class="fas fa-times mr-1"></i> Tolak KRS
+                    </button>
+                </form>
+
+                <form action="{{ route('dosen.krs.approve', $mahasiswa->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <button type="submit" @disabled($k->status == 'aktif')
+                        class="px-4 py-2 rounded text-white transition duration-150
+                {{ $k->status == 'aktif' ? 'bg-gray-400 cursor-not-allowed opacity-70' : 'bg-green-600 hover:bg-green-700' }}">
+                        <i class="fas fa-check mr-1"></i> Validasi KRS
                     </button>
                 </form>
             </div>

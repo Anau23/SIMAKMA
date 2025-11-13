@@ -34,13 +34,14 @@ class KRSDosenController extends Controller
     public function show($mahasiswa_id)
     {
         $mahasiswa = Mahasiswa::with(['user', 'krs.matkul'])->findOrFail($mahasiswa_id);
+        $krs = $mahasiswa->krs;
 
-        return view('dosen.krs.show', compact('mahasiswa'));
+        return view('dosen.krs.show', compact('mahasiswa', 'krs'));
     }
 
     public function approveKrs(Request $request, $id)
     {
-        $dosen = auth()->user()->dosen;
+        $dosen = auth()->user()->dosens->first();
         $mahasiswa = Mahasiswa::where('doswal_id', $dosen->id)->findOrFail($id);
 
         Kr::where('mahasiswa_id', $mahasiswa->id)
@@ -52,7 +53,7 @@ class KRSDosenController extends Controller
 
     public function rejectKrs(Request $request, $id)
     {
-        $dosen = auth()->user()->dosen;
+        $dosen = auth()->user()->dosens->first();
         $mahasiswa = Mahasiswa::where('doswal_id', $dosen->id)->findOrFail($id);
 
         Kr::where('mahasiswa_id', $mahasiswa->id)

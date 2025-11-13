@@ -61,9 +61,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 Route::middleware(['auth', 'role:dosen'])->prefix('dosen')->name('dosen.')->group(function () {
     Route::get('/dashboard', [DosenDashboard::class, 'index'])->name('dashboard');
     Route::get('/krs', [DosenKRS::class, 'index'])->name('krs.index');
-     Route::get('/krs/{mahasiswa_id}', [DosenKRS::class, 'show'])->name('dosen.krs.show');
-    Route::post('/krs/{id}/approve', [DosenKRS::class, 'approveKrs'])->name('krs.approve');
-    Route::post('/krs/{id}/reject', [DosenKRS::class, 'rejectKrs'])->name('krs.reject');
+    Route::get('/krs/{mahasiswa_id}', [DosenKRS::class, 'show'])->name('krs.show');
+    Route::put('/krs/{id}/approve', [DosenKRS::class, 'approveKrs'])->name('krs.approve');
+    Route::put('/krs/{id}/reject', [DosenKRS::class, 'rejectKrs'])->name('krs.reject');
 });
 
 // Mahasiswa Routes
