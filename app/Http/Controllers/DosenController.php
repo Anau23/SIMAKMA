@@ -6,6 +6,8 @@ use App\Models\Dosen;
 use App\Models\User;
 use App\Models\Prodi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class DosenController extends Controller
 {
@@ -30,22 +32,34 @@ class DosenController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8',
-            'nip' => 'required|unique:dosen',
-            'prodi_id' => 'required|exists:prodi,id',
+            'nip' => 'required|unique:dosens',
+            'prodi_id' => 'required|exists:prodis,id',
             'alamat' => 'required',
             'gender' => 'required|in:L,P',
             'religion' => 'required',
         ]);
 
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errorMessage = "Tambah data gagal. periksa kembali data yang diinput.<br><ul>";
+            foreach ($errors as $error) {
+                $errorMessage .= "<li>$error</li>";
+            }
+            $errorMessage .= "</ul>";
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $errorMessage);
+        }
+
         // Create user
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => Hash::make($request->password),
             'role' => 'dosen',
             'status' => 'aktif'
         ]);
@@ -77,15 +91,27 @@ class DosenController extends Controller
 
     public function update(Request $request, Dosen $dosen)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users,email,' . $dosen->user_id,
-            'nip' => 'required|unique:dosen,nip,' . $dosen->id,
-            'prodi_id' => 'required|exists:prodi,id',
+            'nip' => 'required|unique:dosens,nip,' . $dosen->id,
+            'prodi_id' => 'required|exists:prodis,id',
             'alamat' => 'required',
             'gender' => 'required|in:L,P',
             'religion' => 'required',
         ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errorMessage = "Update data gagal. periksa kembali data yang diinput.<br><ul>";
+            foreach ($errors as $error) {
+                $errorMessage .= "<li>$error</li>";
+            }
+            $errorMessage .= "</ul>";
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $errorMessage);
+        }
 
         // Update user
         $dosen->user->update([

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Matkul;
 use App\Models\Prodi;
 use App\Models\Dosen;
+use Illuminate\Support\Facades\Validator;
 
 class MatkulController extends Controller
 {
@@ -46,14 +47,26 @@ class MatkulController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'kode_mk' => 'required|unique:matkul',
+        $validator = Validator::make($request->all(), [
+            'kode_mk' => 'required|unique:matkuls',
             'name' => 'required',
             'sks' => 'required|integer',
             'semester' => 'required|integer',
-            'prodi_id' => 'required|exists:prodi,id',
-            'dosen_id' => 'required|exists:dosen,id',
+            'prodi_id' => 'required|exists:prodis,id',
+            'dosen_id' => 'required|exists:dosens,id',
         ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errorMessage = "Tambah data gagal. periksa kembali data yang diinput.<br><ul>";
+            foreach ($errors as $error) {
+                $errorMessage .= "<li>$error</li>";
+            }
+            $errorMessage .= "</ul>";
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $errorMessage);
+        }
 
         Matkul::create($request->all());
 
@@ -74,14 +87,26 @@ class MatkulController extends Controller
 
     public function update(Request $request, Matkul $matkul)
     {
-        $request->validate([
-            'kode_mk' => 'required|unique:matkul,kode_mk,' . $matkul->id,
+        $validator = Validator::make($request->all(), [
+            'kode_mk' => 'required|unique:matkuls,kode_mk,' . $matkul->id,
             'name' => 'required',
             'sks' => 'required|integer',
             'semester' => 'required|integer',
-            'prodi_id' => 'required|exists:prodi,id',
-            'dosen_id' => 'required|exists:dosen,id',
+            'prodi_id' => 'required|exists:prodis,id',
+            'dosen_id' => 'required|exists:dosens,id',
         ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errorMessage = "Update data gagal. periksa kembali data yang diinput.<br><ul>";
+            foreach ($errors as $error) {
+                $errorMessage .= "<li>$error</li>";
+            }
+            $errorMessage .= "</ul>";
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $errorMessage);
+        }
 
         $matkul->update($request->all());
 

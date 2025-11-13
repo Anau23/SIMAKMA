@@ -23,11 +23,13 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-gray-700">SKS</label>
-                        <input type="number" name="sks" class="w-full border-gray-300 rounded-md shadow-sm" required>
+                        <input type="number" name="sks" class="w-full border-gray-300 rounded-md shadow-sm"
+                            required>
                     </div>
                     <div>
                         <label class="block text-gray-700">Semester</label>
-                        <input type="number" name="semester" class="w-full border-gray-300 rounded-md shadow-sm" required>
+                        <input type="number" name="semester" class="w-full border-gray-300 rounded-md shadow-sm"
+                            required>
                     </div>
                 </div>
 
@@ -54,7 +56,8 @@
                 <div class="flex justify-end mt-4">
                     <a href="{{ route('admin.matkul.index') }}"
                         class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 mr-2">Batal</a>
-                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Simpan</button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Simpan</button>
                 </div>
             </form>
         </div>
