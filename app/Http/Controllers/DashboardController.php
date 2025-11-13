@@ -11,12 +11,6 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->isAdmin()) {
-            return view('dashboard');
-        } elseif ($user->isDosen()) {
-            return view('dashboard');
-        } else {
-            return view('dashboard');
-        }
+        return view('dashboard', compact('user'));
     }
 }

@@ -11,7 +11,14 @@ class DosenController extends Controller
 {
     public function index()
     {
-        $dosen = Dosen::with(['user', 'prodi'])->get();
+        $dosen = Dosen::with(['user', 'prodi'])
+            ->when(request('search'), function ($q) {
+                $q->where('name', 'like', '%' . request('search') . '%')
+                    ->orWhere('nip', 'like', '%' . request('search') . '%');
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(10)
+            ->withQueryString();
         return view('admin.dosen.index', compact('dosen'));
     }
 

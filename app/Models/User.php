@@ -43,7 +43,6 @@ class User extends Authenticatable
 		return $this->hasMany(Mahasiswa::class);
 	}
 
-	// 🔽 Tambahkan fungsi pengecekan role
 	public function isAdmin()
 	{
 		return $this->role === 'admin';

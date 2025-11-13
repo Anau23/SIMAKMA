@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController as AdminDashboard;
 use App\Http\Controllers\MahasiswaController as AdminMahasiswa;
 use App\Http\Controllers\DosenController as AdminDosen;
+use App\Http\Controllers\ProdiController as AdminProdi;
 use App\Http\Controllers\MatkulController as AdminMatkul;
 use App\Http\Controllers\KRSController as AdminKRS;
 use App\Http\Controllers\DashboardController as DosenDashboard;
@@ -50,6 +51,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Dosen Management
     Route::resource('/dosen', AdminDosen::class);
+    Route::resource('/prodi', AdminProdi::class);
 
     // Mata Kuliah Management
     Route::resource('/matkul', AdminMatkul::class);
