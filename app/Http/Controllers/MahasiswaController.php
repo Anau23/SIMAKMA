@@ -22,12 +22,12 @@ class MahasiswaController extends Controller
         if ($search) {
             $query->whereHas('user', function ($q) use ($search) {
                 $q->where('name', 'like', "%$search%")
-                  ->orWhere('email', 'like', "%$search%");
+                    ->orWhere('email', 'like', "%$search%");
             })
-            ->orWhere('nim', 'like', "%$search%")
-            ->orWhereHas('prodi', function ($q) use ($search) {
-                $q->where('name', 'like', "%$search%");
-            });
+                ->orWhere('nim', 'like', "%$search%")
+                ->orWhereHas('prodi', function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%");
+                });
         }
 
         $mahasiswa = $query->orderBy('nim')->paginate(10);
@@ -156,5 +156,13 @@ class MahasiswaController extends Controller
         $mahasiswa->delete();
 
         return redirect()->route('admin.mahasiswa.index')->with('success', 'Mahasiswa berhasil dihapus.');
+    }
+    public function biodata()
+    {
+        $mahasiswa = Mahasiswa::with(['user', 'dosen.user', 'prodi'])
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        return view('mahasiswa.biodata.index', compact('mahasiswa'));
     }
 }
