@@ -26,10 +26,10 @@ new #[Layout('layouts.guest')] class extends Component
 };
 ?>
 
-<div class="flex flex-col items-center justify-center min-h-screen bg-white-50">
+<div class="flex flex-col items-center justify-center min-h-52 bg-white-50">
     <!-- Logo -->
-    <div class="mb-6">
-        <img src="{{ asset('assets/img/logo2.jpg') }}" alt="Logo" class="w-50 h-50 mx-auto rounded-full shadow-md">
+    <div class="mt-10">
+        <img src="{{ asset('assets/img/logo2.jpg') }}" alt="Logo" class="w-44 h-w-44 mx-auto rounded-full shadow-md">
     </div>
 
     <!-- Session Status -->
@@ -48,19 +48,19 @@ new #[Layout('layouts.guest')] class extends Component
         <div class="mt-4 relative">
             <x-input-label for="password" :value="__('Password')" />
 
-            <x-text-input 
-                wire:model="form.password" 
-                id="password" 
+            <x-text-input
+                wire:model="form.password"
+                id="password"
                 class="block mt-1 w-full pr-10"
-                type="password" 
-                name="password" 
-                required 
-                autocomplete="current-password" 
+                type="password"
+                name="password"
+                required
+                autocomplete="current-password"
             />
 
             <!-- Tombol Show/Hide -->
-            <button type="button" 
-                onclick="togglePassword()" 
+            <button type="button"
+                onclick="togglePassword()"
                 class="absolute right-3 top-9 text-gray-500 hover:text-gray-700 focus:outline-none">
                 👁️
             </button>
@@ -69,23 +69,23 @@ new #[Layout('layouts.guest')] class extends Component
         </div>
 
         <!-- Remember Me -->
-        <div class="block mt-4">
+        {{-- <div class="block mt-4">
             <label for="remember" class="inline-flex items-center">
                 <input wire:model="form.remember" id="remember" type="checkbox"
                     class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
                     name="remember">
                 <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
             </label>
-        </div>
+        </div> --}}
 
         <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
+            {{-- @if (Route::has('password.request'))
                 <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none
                     focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     href="{{ route('password.request') }}" wire:navigate>
                     {{ __('Forgot your password?') }}
                 </a>
-            @endif
+            @endif --}}
 
             <x-primary-button class="ms-3">
                 {{ __('Log in') }}

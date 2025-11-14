@@ -17,7 +17,7 @@
                         </div>
                         <div>
                             <p class="text-sm font-medium text-blue-600">Total Mata Kuliah</p>
-                            <p class="text-2xl font-bold text-blue-800">{{ $krs->count() }}</p>
+                            <p class="text-2xl font-bold text-blue-800">{{ $krs->count() + $tempKRS->count() }}</p>
                         </div>
                     </div>
                 </div>
@@ -68,7 +68,9 @@
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">Tambah Mata Kuliah</h3>
                         @if ($khsValid)
                             <div class="mb-4 bg-green-50 border border-green-300 text-green-800 px-4 py-3 rounded">
-                                <i class="fas fa-info-circle mr-2"></i>
+                                <svg class="w-4 h-4 mr-2 inline-block text-green-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0 1 1 0 002 0zm-1 3a1 1 0 00-1 1v4a1 1 0 102 0v-4a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
                                 IP Semester Anda: <strong>{{ number_format($ips, 2) }}</strong>.
                                 Anda dapat mengambil maksimal
                                 <strong>{{ $maxSKS }} SKS</strong> pada semester ini.
@@ -86,8 +88,9 @@
                                 </div>
                             </div>
                         @endif
-                        <form action="{{ route('mahasiswa.krs.store') }}" method="POST"
-                            @if (!$khsValid) class="opacity-50 pointer-events-none" @endif>
+
+                        <form action="{{ route('mahasiswa.krs.addTemp') }}" method="POST"
+                            @if (!$khsValid || $hasFinalized) class="opacity-50 pointer-events-none" @endif>
                             @csrf
 
                             <div class="mb-4">
@@ -118,9 +121,9 @@
                                 </p>
                             </div>
 
-                            <button type="submit" @disabled(!$khsValid)
+                            <button type="submit" @disabled(!$khsValid || $hasFinalized)
                                 class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 font-medium">
-                                <i class="fas fa-plus mr-2"></i>Tambah ke KRS
+                                <i class="fas fa-plus mr-2"></i>Tambah ke Daftar
                             </button>
                         </form>
 
@@ -159,7 +162,23 @@
                             </span>
                         </div>
 
-                        @if ($krs->count() > 0)
+                        @if ($tempKRS->count() > 0 && !$hasFinalized)
+                            <div class="mb-4 bg-blue-50 border border-blue-300 text-blue-800 px-4 py-3 rounded flex justify-between items-center">
+                                <span>
+                                    <i class="fas fa-info-circle mr-2"></i>
+                                    Anda memiliki <strong>{{ $tempKRS->count() }}</strong> mata kuliah yang belum difinalisasi
+                                </span>
+                                <form action="{{ route('mahasiswa.krs.finalize') }}" method="POST" id="finalize-form">
+                                    @csrf
+                                    <button type="button" onclick="confirmFinalize()"
+                                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium">
+                                        <i class="fas fa-check-double mr-1"></i>Finalisasi KRS
+                                    </button>
+                                </form>
+                            </div>
+                        @endif
+
+                        @if ($krs->count() > 0 || $tempKRS->count() > 0)
                             {{-- Tabel (Desktop) --}}
                             <div class="overflow-x-auto hidden md:block">
                                 <table class="min-w-full border border-gray-200 text-sm text-gray-600">
@@ -174,58 +193,75 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($krs as $index => $item)
-                                            <tr class="hover:bg-gray-50">
+                                        {{-- KRS Temporary (Belum Finalisasi) --}}
+                                        @foreach ($tempKRS as $index => $item)
+                                            <tr class="hover:bg-gray-50 bg-yellow-50">
                                                 <td class="border px-4 py-3">{{ $index + 1 }}</td>
                                                 <td class="border px-4 py-3">
-                                                    <div class="font-medium text-gray-900">{{ $item->matkul->name }}
-                                                    </div>
-                                                    <div class="text-xs text-gray-500">Kode:
-                                                        {{ $item->matkul->kode_mk }}</div>
-                                                    <div class="text-xs text-gray-500">Semester:
-                                                        {{ $item->matkul->semester }}</div>
+                                                    <div class="font-medium text-gray-900">{{ $item->name }}</div>
+                                                    <div class="text-xs text-gray-500">Kode: {{ $item->kode_mk }}</div>
+                                                    <div class="text-xs text-gray-500">Semester: {{ $item->semester }}</div>
+                                                </td>
+                                                <td class="border px-4 py-3">
+                                                    {{ $item->dosen->name ?? '-' }}
+                                                </td>
+                                                <td class="border px-4 py-3 text-center">
+                                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                                                        {{ $item->sks }}
+                                                    </span>
+                                                </td>
+                                                <td class="border px-4 py-3">
+                                                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium">
+                                                        Belum Finalisasi
+                                                    </span>
+                                                </td>
+                                                <td class="border px-4 py-3 text-center">
+                                                    <form action="{{ route('mahasiswa.krs.removeTemp', $item->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                            class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm font-medium">
+                                                            <i class="fas fa-trash mr-1"></i> Hapus
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+
+                                        {{-- KRS Tersimpan (Sudah Finalisasi) --}}
+                                        @foreach ($krs as $index => $item)
+                                            <tr class="hover:bg-gray-50">
+                                                <td class="border px-4 py-3">{{ $tempKRS->count() + $index + 1 }}</td>
+                                                <td class="border px-4 py-3">
+                                                    <div class="font-medium text-gray-900">{{ $item->matkul->name }}</div>
+                                                    <div class="text-xs text-gray-500">Kode: {{ $item->matkul->kode_mk }}</div>
+                                                    <div class="text-xs text-gray-500">Semester: {{ $item->matkul->semester }}</div>
                                                 </td>
                                                 <td class="border px-4 py-3">
                                                     {{ $item->matkul->dosen->name ?? '-' }}
                                                 </td>
                                                 <td class="border px-4 py-3 text-center">
-                                                    <span
-                                                        class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
                                                         {{ $item->matkul->sks }}
                                                     </span>
                                                 </td>
                                                 <td class="border px-4 py-3">
                                                     @if ($item->status == 'pending')
-                                                        <span
-                                                            class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">
-                                                            Menunggu Persetujuan
+                                                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">
+                                                            Terkirim
                                                         </span>
                                                     @elseif($item->status == 'aktif')
-                                                        <span
-                                                            class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+                                                        <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
                                                             Disetujui
                                                         </span>
                                                     @else
-                                                        <span
-                                                            class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">
+                                                        <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">
                                                             Ditolak
                                                         </span>
                                                     @endif
                                                 </td>
                                                 <td class="border px-4 py-3 text-center">
-                                                    @if ($item->status == 'pending')
-                                                        <form action="{{ route('mahasiswa.krs.destroy', $item->id) }}"
-                                                            method="POST" id="delete-form-{{ $item->id }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="button" onclick="confirmDelete({{ $item->id }})"
-                                                                class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm font-medium">
-                                                                <i class="fas fa-trash mr-1"></i> Hapus
-                                                            </button>
-                                                        </form>
-                                                    @else
-                                                        <span class="text-gray-400 text-sm">Tidak ada aksi</span>
-                                                    @endif
+                                                    <span class="text-gray-400 text-sm">-</span>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -235,16 +271,56 @@
 
                             {{-- Card (Mobile) --}}
                             <div class="md:hidden space-y-4">
+                                {{-- Temporary KRS --}}
+                                @foreach ($tempKRS as $item)
+                                    <div class="border rounded-lg p-4 shadow-sm bg-yellow-50">
+                                        <div class="flex justify-between items-start mb-3">
+                                            <div>
+                                                <h4 class="font-semibold text-gray-800">{{ $item->name }}</h4>
+                                                <p class="text-gray-600 text-sm">Kode: {{ $item->kode_mk }}</p>
+                                            </div>
+                                            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                                                {{ $item->sks }} SKS
+                                            </span>
+                                        </div>
+
+                                        <div class="space-y-2 text-sm mb-3">
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-600">Dosen:</span>
+                                                <span>{{ $item->dosen->name ?? '-' }}</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-600">Semester:</span>
+                                                <span>{{ $item->semester }}</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-600">Status:</span>
+                                                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium">
+                                                    Belum Finalisasi
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <form action="{{ route('mahasiswa.krs.removeTemp', $item->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="w-full px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm font-medium">
+                                                <i class="fas fa-trash mr-1"></i> Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                @endforeach
+
+                                {{-- Saved KRS --}}
                                 @foreach ($krs as $item)
                                     <div class="border rounded-lg p-4 shadow-sm">
                                         <div class="flex justify-between items-start mb-3">
                                             <div>
                                                 <h4 class="font-semibold text-gray-800">{{ $item->matkul->name }}</h4>
-                                                <p class="text-gray-600 text-sm">Kode: {{ $item->matkul->kode_mk }}
-                                                </p>
+                                                <p class="text-gray-600 text-sm">Kode: {{ $item->matkul->kode_mk }}</p>
                                             </div>
-                                            <span
-                                                class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                                            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
                                                 {{ $item->matkul->sks }} SKS
                                             </span>
                                         </div>
@@ -261,35 +337,20 @@
                                             <div class="flex justify-between">
                                                 <span class="text-gray-600">Status:</span>
                                                 @if ($item->status == 'pending')
-                                                    <span
-                                                        class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">
-                                                        Menunggu
+                                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">
+                                                        Terkirim
                                                     </span>
                                                 @elseif($item->status == 'aktif')
-                                                    <span
-                                                        class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+                                                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
                                                         Disetujui
                                                     </span>
                                                 @else
-                                                    <span
-                                                        class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">
+                                                    <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">
                                                         Ditolak
                                                     </span>
                                                 @endif
                                             </div>
                                         </div>
-
-                                        @if ($item->status == 'pending')
-                                            <form action="{{ route('mahasiswa.krs.destroy', $item->id) }}"
-                                                method="POST" id="delete-form-mobile-{{ $item->id }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" onclick="confirmDelete({{ $item->id }}, true)"
-                                                    class="w-full px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm font-medium">
-                                                    <i class="fas fa-trash mr-1"></i> Hapus
-                                                </button>
-                                            </form>
-                                        @endif
                                     </div>
                                 @endforeach
                             </div>
@@ -297,27 +358,23 @@
                             <div class="text-center py-12">
                                 <i class="fas fa-book-open text-4xl text-gray-300 mb-4"></i>
                                 <h4 class="text-lg font-medium text-gray-500 mb-2">Belum ada mata kuliah dalam KRS</h4>
-                                <p class="text-gray-400 text-sm">Silakan tambah mata kuliah menggunakan form di samping
-                                </p>
+                                <p class="text-gray-400 text-sm">Silakan tambah mata kuliah menggunakan form di samping</p>
                             </div>
                         @endif
 
                         {{-- Informasi Tambahan --}}
-                        @if ($krs->count() > 0)
+                        @if ($krs->count() > 0 || $tempKRS->count() > 0)
                             <div class="mt-6 pt-6 border-t border-gray-200">
                                 <div class="flex flex-col sm:flex-row sm:justify-between gap-4 text-sm">
                                     <div>
                                         <p class="text-gray-600">
                                             <span class="font-medium">Catatan:</span>
-                                            Mata kuliah dengan status "Menunggu Persetujuan" masih dapat dihapus.
+                                            Mata kuliah yang belum difinalisasi masih dapat dihapus. <br> Setelah finalisasi, KRS akan terkirim ke dosen wali.
                                         </p>
                                     </div>
                                     <div class="text-right">
                                         <p class="text-gray-800 font-medium">
                                             Total SKS: {{ $totalSKS }}
-                                        </p>
-                                        <p class="text-gray-600 text-xs">
-                                            Minimal SKS untuk aktif: 12 SKS
                                         </p>
                                     </div>
                                 </div>
@@ -348,19 +405,19 @@
             }
         });
 
-        function confirmDelete(id, mobile = false) {
+        function confirmFinalize() {
             Swal.fire({
-                title: 'Yakin hapus mata kuliah dari KRS?',
-                text: "Data ini akan dihapus, anda harus menambahkan lagi dari pilihan!",
+                title: 'Finalisasi KRS?',
+                text: "Setelah finalisasi, Anda tidak dapat menghapus mata kuliah. KRS akan dikirim ke dosen wali untuk disetujui.",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#d33',
+                confirmButtonColor: '#16a34a',
                 cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Ya, hapus!'
+                confirmButtonText: 'Ya, Finalisasi!',
+                cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const formId = mobile ? `delete-form-mobile-${id}` : `delete-form-${id}`;
-                    document.getElementById(formId).submit();
+                    document.getElementById('finalize-form').submit();
                 }
             });
         }

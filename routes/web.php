@@ -72,6 +72,10 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
     Route::get('/krs', [MahasiswaKRS::class, 'index'])->name('krs.index');
     Route::post('/krs', [MahasiswaKRS::class, 'store'])->name('krs.store');
     Route::delete('/krs/{krs}', [MahasiswaKRS::class, 'destroy'])->name('krs.destroy');
+    Route::post('/krs/add-temp', [MahasiswaKRS::class, 'addTemp'])->name('krs.addTemp');
+    Route::delete('/krs/remove-temp/{matkulId}', [MahasiswaKRS::class, 'removeTemp'])->name('krs.removeTemp');
+    Route::post('/krs/finalize', [MahasiswaKRS::class, 'finalize'])->name('krs.finalize');
+
     Route::resource('/khs', MahasiswaKHS::class);
     Route::get('/khs/{kh}/download', [MahasiswaKHS::class, 'download'])->name('khs.download');
 });
