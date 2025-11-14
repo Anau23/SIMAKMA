@@ -9,10 +9,20 @@ use Illuminate\Support\Facades\Validator;
 class KelasController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $kelas = Kela::all();
-        return view('admin.kelas.index', compact('kelas'));
+        $search = $request->query('search');
+
+        $kelas = Kela::when($search, function ($q, $search) {
+            return $q->where('name', 'like', "%$search%")
+                ->orWhere('ruang', 'like', "%$search%")
+                ->orWhere('kapasitas', 'like', "%$search%");
+        })
+            ->orderBy('name')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('admin.kelas.index', compact('kelas', 'search'));
     }
 
     public function create()
@@ -25,6 +35,7 @@ class KelasController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'ruang' => 'required|string|max:255',
+            'kapasitas' => 'required|integer',
         ]);
 
         if ($validator->fails()) {
@@ -61,6 +72,7 @@ class KelasController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'ruang' => 'required|string|max:255',
+            'kapasitas' => 'required|integer',
         ]);
 
         if ($validator->fails()) {

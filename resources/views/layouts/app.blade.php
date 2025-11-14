@@ -19,24 +19,48 @@
 </head>
 
 <body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
-        <livewire:layout.navigation />
+    <div x-data="sidebarComponent()" class="min-h-screen bg-gray-100">
+        <!-- Navigation & Content Wrapper -->
+        <div class="transition-all duration-200" :class="sidebarOpen ? 'ml-64' : 'ml-0'">
+            <livewire:layout.navigation />
 
-        <!-- Page Heading -->
-        @if (isset($header))
-            <header class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            </header>
-        @endif
+            <!-- Page Heading -->
+            @if (isset($header))
+                <header class="bg-white shadow">
+                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                        {{ $header }}
+                    </div>
+                </header>
+            @endif
 
-        <!-- Page Content -->
-        <main>
-            {{ $slot }}
-        </main>
+            <!-- Page Content -->
+            <main>
+                {{ $slot }}
+            </main>
+        </div>
     </div>
 </body>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('sidebarComponent', () => ({
+            sidebarOpen: window.innerWidth >= 1024, // desktop auto terbuka
+            isDesktop: window.innerWidth >= 1024,
+            activeDropdown: null,
+            init() {
+                window.addEventListener('resize', () => {
+                    this.isDesktop = window.innerWidth >= 1024;
+
+                    if (this.isDesktop) {
+                        this.sidebarOpen = true;
+                    } else {
+                        this.sidebarOpen = false;
+                    }
+                });
+            }
+        }))
+    })
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

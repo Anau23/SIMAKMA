@@ -7,6 +7,7 @@ use App\Http\Controllers\MahasiswaController as AdminMahasiswa;
 use App\Http\Controllers\DosenController as AdminDosen;
 use App\Http\Controllers\ProdiController as AdminProdi;
 use App\Http\Controllers\MatkulController as AdminMatkul;
+use App\Http\Controllers\JadwalMatkulController as AdminJadwalMatkul;
 use App\Http\Controllers\KRSController as AdminKRS;
 use App\Http\Controllers\FakultasController as AdminFakultas;
 use App\Http\Controllers\DashboardController as DosenDashboard;
@@ -16,6 +17,7 @@ use App\Http\Controllers\DashboardController as MahasiswaDashboard;
 use App\Http\Controllers\KRSController as MahasiswaKRS;
 use App\Http\Controllers\KHSController as MahasiswaKHS;
 use App\Http\Controllers\MahasiswaController as BiodataMahasiswa;
+use App\Http\Controllers\JadwalKuliahMhsController as JadwalKuliahMahasiswa;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,6 +55,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('/dosen', AdminDosen::class);
     Route::resource('/prodi', AdminProdi::class);
     Route::resource('/matkul', AdminMatkul::class);
+    Route::resource('/jadwal_matkul', AdminJadwalMatkul::class);
     Route::get('/krs', [AdminKRS::class, 'index'])->name('krs.index');
     Route::post('/krs/{krs}/approve', [AdminKRS::class, 'approve'])->name('krs.approve');
     Route::post('/krs/{krs}/reject', [AdminKRS::class, 'reject'])->name('krs.reject');
@@ -76,9 +79,13 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
     Route::post('/krs/add-temp', [MahasiswaKRS::class, 'addTemp'])->name('krs.addTemp');
     Route::delete('/krs/remove-temp/{matkulId}', [MahasiswaKRS::class, 'removeTemp'])->name('krs.removeTemp');
     Route::post('/krs/finalize', [MahasiswaKRS::class, 'finalize'])->name('krs.finalize');
+
     Route::resource('/khs', MahasiswaKHS::class);
     Route::get('/khs/{kh}/download', [MahasiswaKHS::class, 'download'])->name('khs.download');
-    Route::get('/biodata', [BiodataMahasiswa::class, 'biodata'])->name('mahasiswa.biodata.index');
+
+    Route::get('/biodata', [BiodataMahasiswa::class, 'biodata'])->name('biodata.index');
+
+    Route::get('/jadwal_kuliah', [JadwalKuliahMahasiswa::class, 'index'])->name('jadwal_kuliah.index');
 });
 
 require __DIR__ . '/auth.php';

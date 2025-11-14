@@ -12,7 +12,7 @@ new class extends Component {
 };
 ?>
 
-<nav x-data="{ open: false, sidebarOpen: false, activeDropdown: null }" class="bg-white border-b border-gray-100 relative">
+<nav class="bg-white border-b border-gray-100 relative sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex items-center space-x-3">
@@ -26,9 +26,9 @@ new class extends Component {
                     </svg>
                 </button>
                 <div class="hidden sm:flex space-x-8 sm:-my-px sm:ms-10">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                    {{-- <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
-                    </x-nav-link>
+                    </x-nav-link> --}}
                 </div>
             </div>
             <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -49,7 +49,7 @@ new class extends Component {
                         </button>
                     </x-slot>
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile')" wire:navigate>
+                        <x-dropdown-link :href="route('mahasiswa.biodata.index')" wire:navigate>
                             {{ __('Profile') }}
                         </x-dropdown-link>
                         <button wire:click="logout" class="w-full text-start">
@@ -62,7 +62,7 @@ new class extends Component {
             </div>
         </div>
     </div>
-    <div x-show="sidebarOpen" @click.away="sidebarOpen = false"
+    <div x-show="sidebarOpen" @click.away="if(window.innerWidth < 1024) sidebarOpen = false"
         class="fixed inset-y-0 left-0 w-64 bg-gray-800 text-white shadow-lg z-40 transform transition-transform duration-200"
         x-transition:enter="transition ease-out duration-200" x-transition:enter-start="-translate-x-full"
         x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in duration-200"
@@ -122,6 +122,24 @@ new class extends Component {
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7v10" />
                             </svg>
                             Matkul
+                        </a>
+                        <a href="{{ route('admin.kelas.index') }}"
+                            class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
+                            <!-- Kelas Icon (users/group) -->
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-1a4 4 0 00-4-4h-1M9 20H4v-1a4 4 0 014-4h1m4-6a4 4 0 100-8 4 4 0 000 8z" />
+                            </svg>
+                            kelas
+                        </a>
+                        <a href="{{ route('admin.jadwal_matkul.index') }}"
+                            class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
+                            <!-- Jadwal Matkul Icon (calendar) -->
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3M3 11h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            Jadwal Matkul
                         </a>
                         <a href="{{ route('admin.fakultas.index') }}"
                             class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
@@ -263,7 +281,7 @@ new class extends Component {
                         </svg>
                     </button>
                     <div x-show="activeDropdown === 'info'" class="space-y-1 bg-gray-700" x-transition>
-                        <a href="#"
+                        <a href="{{ route('mahasiswa.jadwal_kuliah.index') }}"
                             class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
                             <!-- Jadwal Kuliah Icon -->
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -272,7 +290,7 @@ new class extends Component {
                             </svg>
                             Jadwal Kuliah
                         </a>
-                        <a href="#"
+                        {{-- <a href="#"
                             class="flex items-center px-6 py-2 text-gray-300 hover:bg-gray-600 transition-colors duration-200">
                             <!-- DPA Icon -->
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -300,12 +318,12 @@ new class extends Component {
                                     d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
                             </svg>
                             Nilai Mata Kuliah
-                        </a>
+                        </a> --}}
                     </div>
                 </div>
 
                 <!-- Biodata Mahasiswa -->
-                <a href="#"
+                <a href="{{ route('mahasiswa.biodata.index') }}"
                     class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200">
                     <!-- Biodata Icon -->
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
