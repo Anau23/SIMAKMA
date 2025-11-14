@@ -12,13 +12,13 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Kela
- * 
+ *
  * @property int $id
  * @property string $name
  * @property string $ruang
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property Collection|JadwalMatkul[] $jadwal_matkuls
  *
  * @package App\Models
@@ -29,7 +29,8 @@ class Kela extends Model
 
 	protected $fillable = [
 		'name',
-		'ruang'
+		'ruang',
+        'kapasitas'
 	];
 
 	public function jadwal_matkuls()

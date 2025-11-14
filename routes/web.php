@@ -7,6 +7,7 @@ use App\Http\Controllers\MahasiswaController as AdminMahasiswa;
 use App\Http\Controllers\DosenController as AdminDosen;
 use App\Http\Controllers\ProdiController as AdminProdi;
 use App\Http\Controllers\MatkulController as AdminMatkul;
+use App\Http\Controllers\JadwalMatkulController as AdminJadwalMatkul;
 use App\Http\Controllers\KRSController as AdminKRS;
 use App\Http\Controllers\FakultasController as AdminFakultas;
 use App\Http\Controllers\DashboardController as DosenDashboard;
@@ -52,6 +53,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('/dosen', AdminDosen::class);
     Route::resource('/prodi', AdminProdi::class);
     Route::resource('/matkul', AdminMatkul::class);
+    Route::resource('/jadwal_matkul', AdminJadwalMatkul::class);
     Route::get('/krs', [AdminKRS::class, 'index'])->name('krs.index');
     Route::post('/krs/{krs}/approve', [AdminKRS::class, 'approve'])->name('krs.approve');
     Route::post('/krs/{krs}/reject', [AdminKRS::class, 'reject'])->name('krs.reject');
