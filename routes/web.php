@@ -16,6 +16,7 @@ use App\Http\Controllers\KelasController as AdminKelas;
 use App\Http\Controllers\DashboardController as MahasiswaDashboard;
 use App\Http\Controllers\KRSController as MahasiswaKRS;
 use App\Http\Controllers\KHSController as MahasiswaKHS;
+use App\Http\Controllers\MahasiswaController as BiodataMahasiswa;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,9 +78,9 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
     Route::post('/krs/add-temp', [MahasiswaKRS::class, 'addTemp'])->name('krs.addTemp');
     Route::delete('/krs/remove-temp/{matkulId}', [MahasiswaKRS::class, 'removeTemp'])->name('krs.removeTemp');
     Route::post('/krs/finalize', [MahasiswaKRS::class, 'finalize'])->name('krs.finalize');
-
     Route::resource('/khs', MahasiswaKHS::class);
     Route::get('/khs/{kh}/download', [MahasiswaKHS::class, 'download'])->name('khs.download');
+    Route::get('/biodata', [BiodataMahasiswa::class, 'biodata'])->name('mahasiswa.biodata.index');
 });
 
 require __DIR__ . '/auth.php';
