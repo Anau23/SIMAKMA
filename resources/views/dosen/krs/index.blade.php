@@ -4,11 +4,8 @@
             {{ __('Data KRS Mahasiswa Bimbingan') }}
         </h2>
     </x-slot>
-
     <div class="py-8 px-4 sm:px-6 lg:px-8">
         <div class="max-w-6xl mx-auto bg-white shadow rounded-lg p-6">
-
-            {{-- Pencarian --}}
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3">
                 <form action="{{ route('dosen.krs.index') }}" method="GET" class="flex gap-2">
                     <input type="text" name="search" value="{{ request('search') }}"
@@ -17,8 +14,6 @@
                     <button class="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Cari</button>
                 </form>
             </div>
-
-            {{-- Tabel (Desktop) --}}
             <div class="overflow-x-auto hidden md:block">
                 <table class="min-w-full border border-gray-200 text-sm text-gray-600">
                     <thead class="bg-gray-100 text-gray-700">
@@ -79,8 +74,6 @@
                     </tbody>
                 </table>
             </div>
-
-            {{-- Card (Mobile) --}}
             <div class="md:hidden space-y-4">
                 @forelse ($krs->groupBy('mahasiswa_id') as $list)
                     @php $mahasiswa = $list->first()->mahasiswa; @endphp
@@ -124,8 +117,6 @@
                     <p class="text-center text-gray-500">Tidak ada data KRS</p>
                 @endforelse
             </div>
-
-            {{-- Pagination --}}
             <div class="mt-4">
                 {{ $krs->links() }}
             </div>

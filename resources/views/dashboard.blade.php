@@ -12,8 +12,6 @@
                 @php
                     $user = Auth::user();
                 @endphp
-
-                {{-- Jika Admin --}}
                 @if ($user->isAdmin())
                     <h3 class="text-lg font-semibold mb-4">Selamat datang, {{ $user->name }} (Admin)</h3>
 
@@ -31,17 +29,13 @@
                             <p class="text-3xl font-extrabold text-purple-600 mt-2">55</p>
                         </div>
                     </div>
-
-                {{-- Jika Mahasiswa --}}
                 @elseif ($user->isMahasiswa())
                     @php
                         $mhs = \App\Models\Mahasiswa::with(['dosen', 'prodi'])
                             ->where('user_id', $user->id)
                             ->first();
                     @endphp
-
                     <h3 class="text-lg font-semibold mb-4">Selamat datang, {{ $user->name }} (Mahasiswa)</h3>
-
                     @if ($mhs)
                         <table class="table-auto w-full border-collapse border border-gray-300">
                             <tbody>
@@ -78,8 +72,6 @@
                     @else
                         <p class="text-gray-600">Data mahasiswa tidak ditemukan.</p>
                     @endif
-
-                {{-- Jika Dosen --}}
                 @elseif ($user->isDosen())
                     @php
                         $dsn = \App\Models\Dosen::where('user_id', $user->id)->first();

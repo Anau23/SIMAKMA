@@ -5,8 +5,6 @@
 
     <div class="py-8 px-4 sm:px-6 lg:px-8">
         <div class="max-w-6xl mx-auto bg-white shadow rounded-lg p-6">
-
-            {{-- Pencarian & Tambah --}}
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3">
                 <form action="{{ route('admin.jadwal_matkul.index') }}" method="GET" class="flex gap-2">
                     <input type="text" name="search" value="{{ $search ?? '' }}"
@@ -19,8 +17,6 @@
                     + Tambah Jadwal
                 </a>
             </div>
-
-            {{-- Tabel Desktop --}}
             <div class="overflow-x-auto hidden md:block">
                 <table class="min-w-full border border-gray-200 text-sm text-gray-600">
                     <thead class="bg-gray-100 text-gray-700">
@@ -62,8 +58,6 @@
                     </tbody>
                 </table>
             </div>
-
-            {{-- Card Mobile --}}
             <div class="md:hidden space-y-4">
                 @forelse ($jadwals as $j)
                     <div class="border rounded-lg p-4 shadow-sm">
@@ -88,8 +82,6 @@
                     <p class="text-center text-gray-500">Tidak ada data</p>
                 @endforelse
             </div>
-
-            {{-- Pagination --}}
             <div class="mt-4">{{ $jadwals->links() }}</div>
         </div>
     </div>

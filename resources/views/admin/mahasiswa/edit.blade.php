@@ -10,8 +10,6 @@
             <form action="{{ route('admin.mahasiswa.update', $mahasiswa->id) }}" method="POST" class="space-y-4">
                 @csrf
                 @method('PUT')
-
-                {{-- NIM --}}
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">NIM</label>
                     <input type="text" name="nim" value="{{ old('nim', $mahasiswa->nim) }}"
@@ -19,8 +17,6 @@
                         placeholder="Masukkan NIM" required>
                     @error('nim') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
-
-                {{-- Nama --}}
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Nama Mahasiswa</label>
                     <input type="text" name="name" value="{{ old('name', $mahasiswa->user->name) }}"
@@ -28,8 +24,6 @@
                         placeholder="Masukkan nama mahasiswa" required>
                     @error('name') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
-
-                {{-- Email --}}
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Email</label>
                     <input type="email" name="email" value="{{ old('email', $mahasiswa->user->email) }}"
@@ -37,8 +31,6 @@
                         placeholder="Masukkan email mahasiswa" required>
                     @error('email') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
-
-                {{-- Dosen Wali --}}
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Dosen Wali</label>
                     <select name="doswal_id"
@@ -54,8 +46,6 @@
                     </select>
                     @error('doswal_id') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
-
-                {{-- Program Studi --}}
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Program Studi</label>
                     <select name="prodi_id"
@@ -71,8 +61,6 @@
                     </select>
                     @error('prodi_id') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
-
-                {{-- Angkatan & Tahun Akademik --}}
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-gray-700 font-medium mb-1">Angkatan</label>
@@ -89,8 +77,6 @@
                         @error('tahun_akademik') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
-
-                {{-- Alamat --}}
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Alamat</label>
                     <textarea name="alamat" rows="2"
@@ -98,8 +84,6 @@
                         placeholder="Masukkan alamat lengkap" required>{{ old('alamat', $mahasiswa->alamat) }}</textarea>
                     @error('alamat') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
-
-                {{-- No. Telepon --}}
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">No. Telepon</label>
                     <input type="text" name="no_telp" value="{{ old('no_telp', $mahasiswa->no_telp) }}"
@@ -107,8 +91,6 @@
                         placeholder="Masukkan nomor telepon" required>
                     @error('no_telp') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
-
-                {{-- Jenis Kelamin & Agama --}}
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-gray-700 font-medium mb-1">Jenis Kelamin</label>
@@ -129,8 +111,6 @@
                         @error('religion') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
-
-                {{-- Tombol --}}
                 <div class="flex justify-end mt-6">
                     <a href="{{ route('admin.mahasiswa.index') }}"
                         class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 mr-2">Batal</a>

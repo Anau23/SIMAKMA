@@ -18,8 +18,6 @@ class KRSController extends Controller
         $tahunSekarang = date('Y');
         $selisihTahun = $tahunSekarang - $angkatan;
         $semester = $selisihTahun * 2 + (date('n') >= 7 ? 1 : 2);
-
-        // Ambil KHS yang valid
         $khs = Kh::where('mahasiswa_id', $mahasiswa->id)
             ->where('semester', $semester)
             ->where('status_verifikasi', 'valid')
@@ -29,20 +27,14 @@ class KRSController extends Controller
         $khsValid = $khs && $khs->status_verifikasi === 'valid';
         $ips = $khs->ips ?? null;
         $maxSKS = $ips ? ($ips >= 3.0 ? 24 : 20) : 0;
-
-        // Ambil KRS yang sudah tersimpan (finalized)
         $krs = Kr::with(['matkul.dosen'])
             ->where('mahasiswa_id', $mahasiswa->id)
             ->orderBy('created_at', 'desc')
             ->get();
-
-        // Ambil temporary KRS dari session
         $tempKRSIds = session('temp_krs', []);
         $tempKRS = Matkul::with('dosen')
             ->whereIn('id', $tempKRSIds)
             ->get();
-
-        // Mata kuliah yang available (belum di KRS dan belum di temp)
         $usedMatkulIds = array_merge(
             $krs->pluck('matkul_id')->toArray(),
             $tempKRSIds
@@ -54,11 +46,7 @@ class KRSController extends Controller
             ->orderBy('semester')
             ->orderBy('name')
             ->get();
-
-        // Total SKS (dari KRS tersimpan + temporary)
         $totalSKS = $krs->sum(fn($item) => $item->matkul->sks) + $tempKRS->sum('sks');
-
-        // Check apakah ada KRS yang sudah finalized di semester ini
         $hasFinalized = $krs->count() > 0;
 
         return view('mahasiswa.krs.index', compact(
@@ -74,7 +62,6 @@ class KRSController extends Controller
         ));
     }
 
-    // Tambah ke temporary list (session)
     public function addTemp(Request $request)
     {
         $mahasiswa = Auth::user()->mahasiswas->first();
@@ -99,16 +86,10 @@ class KRSController extends Controller
         }
 
         $maxSKS = $khs->ips >= 3.0 ? 24 : 20;
-
-        // Get current temp KRS
         $tempKRSIds = session('temp_krs', []);
-
-        // Check if already in temp
         if (in_array($request->matkul_id, $tempKRSIds)) {
             return redirect()->back()->with('error', 'Mata kuliah sudah ada dalam daftar.');
         }
-
-        // Check if already in saved KRS
         $existingKRS = Kr::where('mahasiswa_id', $mahasiswa->id)
             ->where('matkul_id', $request->matkul_id)
             ->first();
@@ -116,8 +97,6 @@ class KRSController extends Controller
         if ($existingKRS) {
             return redirect()->back()->with('error', 'Mata kuliah sudah ada dalam KRS yang tersimpan.');
         }
-
-        // Calculate total SKS
         $tempMatkuls = Matkul::whereIn('id', $tempKRSIds)->get();
         $savedKRS = Kr::where('mahasiswa_id', $mahasiswa->id)->with('matkul')->get();
 
@@ -129,13 +108,9 @@ class KRSController extends Controller
         if (($totalTempSKS + $totalSavedSKS + $matkul->sks) > $maxSKS) {
             return redirect()->back()->with('error', "Total SKS melebihi batas. Maksimal {$maxSKS} SKS untuk IP {$khs->ips}.");
         }
-
-        // Check prodi
         if ($matkul->prodi_id != $mahasiswa->prodi_id) {
             return redirect()->back()->with('error', 'Mata kuliah tidak tersedia untuk program studi Anda.');
         }
-
-        // Add to session
         $tempKRSIds[] = $request->matkul_id;
         session(['temp_krs' => $tempKRSIds]);
 
@@ -143,7 +118,6 @@ class KRSController extends Controller
             ->with('success', 'Mata kuliah berhasil ditambahkan ke daftar. Klik Finalisasi KRS untuk menyimpan.');
     }
 
-    // Hapus dari temporary list
     public function removeTemp($matkulId)
     {
         $tempKRSIds = session('temp_krs', []);
@@ -156,7 +130,6 @@ class KRSController extends Controller
             ->with('success', 'Mata kuliah berhasil dihapus dari daftar.');
     }
 
-    // Finalisasi - simpan semua temp KRS ke database
     public function finalize()
     {
         $mahasiswa = Auth::user()->mahasiswas->first();
@@ -166,7 +139,6 @@ class KRSController extends Controller
             return redirect()->back()->with('error', 'Tidak ada mata kuliah untuk difinalisasi.');
         }
 
-        // Simpan semua temp KRS ke database
         foreach ($tempKRSIds as $matkulId) {
             Kr::create([
                 'mahasiswa_id' => $mahasiswa->id,
@@ -175,7 +147,6 @@ class KRSController extends Controller
             ]);
         }
 
-        // Clear session
         session()->forget('temp_krs');
 
         return redirect()->route('mahasiswa.krs.index')

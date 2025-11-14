@@ -11,8 +11,6 @@ class JadwalKuliahMhsController extends Controller
     public function index(Request $request)
     {
         $mahasiswa = Auth::user()->mahasiswas->first();
-
-        // Hitung semester saat ini
         $angkatan = (int) substr($mahasiswa->tahun_akademik, 0, 4);
         $tahunSekarang = date('Y');
         $selisihTahun = $tahunSekarang - $angkatan;
@@ -34,18 +32,12 @@ class JadwalKuliahMhsController extends Controller
                 $hariUrutan = ['Senin' => 1, 'Selasa' => 2, 'Rabu' => 3, 'Kamis' => 4, 'Jumat' => 5, 'Sabtu' => 6];
                 return [$hariUrutan[$jadwal->jadwal_matkul->hari] ?? 7, $jadwal->jadwal_matkul->jam_mulai];
             });
-
-        // Pagination manual
         $perPage = 5;
         $page = $request->query('page', 1);
         $total = $jadwals->count();
         $jadwalsPage = $jadwals->slice(($page - 1) * $perPage, $perPage)->values();
-
-        // Hitung total SKS
         $totalSKS = $jadwals->sum(fn($j) => $j->jadwal_matkul->matkul->sks);
-
         $tahunAkademik = $mahasiswa->tahun_akademik;
-
         return view('mahasiswa.jadwal_kuliah.index', [
             'jadwals' => $jadwalsPage,
             'totalJadwal' => $total,

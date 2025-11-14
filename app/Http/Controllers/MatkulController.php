@@ -13,11 +13,7 @@ class MatkulController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-
-        // Query dasar dengan relasi
         $query = Matkul::with(['prodi', 'dosen']);
-
-        // Jika ada pencarian
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
@@ -30,11 +26,7 @@ class MatkulController extends Controller
                     });
             });
         }
-
-        // Pagination (10 item per halaman)
         $matkul = $query->orderBy('kode_mk')->paginate(10);
-
-        // Kirim data ke view
         return view('admin.matkul.index', compact('matkul', 'search'));
     }
 

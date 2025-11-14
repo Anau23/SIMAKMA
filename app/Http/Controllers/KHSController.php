@@ -33,14 +33,13 @@ class KHSController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi dengan image instead of PDF
         $validator = Validator::make($request->all(), [
             'ips' => 'required|numeric|min:0|max:4',
             'khs_file' => [
                 'required',
                 'image',
                 'mimes:png,jpg,jpeg',
-                'max:5120', // 5MB
+                'max:5120',
             ],
         ], [
             'khs_file.image' => 'File harus berupa gambar.',
@@ -59,38 +58,24 @@ class KHSController extends Controller
                 ->withInput()
                 ->with('error', $errorMessage);
         }
-
         $mahasiswa = Auth::user()->mahasiswas->first();
-
-        // Simpan file dengan ekstensi yang benar
         $file = $request->file('khs_file');
         $extension = $file->getClientOriginalExtension();
         $fileName = time() . '_' . $mahasiswa->nim . '.' . $extension;
         $path = $file->storeAs('khs', $fileName, 'public');
         $fullPath = storage_path('app/public/' . $path);
-
-        // Jalankan OCR langsung pada image (lebih mudah!)
         $ips_ocr = null;
         try {
             Log::info('Mencoba OCR pada file: ' . $fullPath);
-
             $tesseract = new TesseractOCR($fullPath);
-
-            // Set path Tesseract untuk Windows
             if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
                 $tesseract->executable('C:\\Program Files\\Tesseract-OCR\\tesseract.exe');
             }
-
             $ocr = $tesseract->lang('eng')->run();
-
             Log::info('Hasil OCR:', ['ocr_text' => substr($ocr, 0, 500)]);
-
-            // Cari pattern IP (0.00 - 4.00)
-            // Coba beberapa pattern untuk lebih fleksibel
             if (preg_match('/[0-4]\.[0-9]{2}/', $ocr, $match)) {
                 $ips_ocr = $match[0];
             } elseif (preg_match('/[0-4],\d{2}/', $ocr, $match)) {
-                // Jika OCR membaca koma instead of titik
                 $ips_ocr = str_replace(',', '.', $match[0]);
             }
 
@@ -99,40 +84,25 @@ class KHSController extends Controller
             Log::error('OCR Error: ' . $e->getMessage());
             $ips_ocr = null;
         }
-
-        // Hitung semester otomatis
         $angkatan = (int) substr($mahasiswa->tahun_akademik, 0, 4);
         $tahunSekarang = date('Y');
         $selisihTahun = $tahunSekarang - $angkatan;
         $semester = $selisihTahun * 2 + (date('n') >= 7 ? 1 : 2);
-
-        // Tentukan status verifikasi otomatis
-        $status_verifikasi = 'pending'; // Default pending
+        $status_verifikasi = 'pending';
 
         if ($ips_ocr) {
             $selisih = abs((float)$ips_ocr - (float)$request->ips);
-
-            // Toleransi 0.01 untuk kesalahan OCR (misal 3.75 terbaca 3.74 atau 3.76)
-            // TAPI input harus LEBIH RENDAH atau SAMA dengan OCR
-            // Jika input LEBIH TINGGI dari OCR = curiga manipulasi
-
             $inputIps = (float)$request->ips;
             $ocrIps = (float)$ips_ocr;
-
             if ($selisih <= 0.01 && $inputIps <= $ocrIps) {
-                // Valid: selisih kecil DAN input tidak lebih tinggi dari OCR
                 $status_verifikasi = 'valid';
             } elseif ($inputIps > $ocrIps) {
-                // Invalid: input lebih tinggi dari yang terdeteksi OCR (curiga manipulasi)
                 $status_verifikasi = 'invalid';
             } elseif ($selisih > 0.2) {
-                // Invalid: selisih terlalu besar
                 $status_verifikasi = 'invalid';
             } else {
-                // Pending: selisih sedang, butuh review manual
                 $status_verifikasi = 'pending';
             }
-
             Log::info('Perbandingan IPS:', [
                 'input' => $inputIps,
                 'ocr' => $ocrIps,
@@ -152,7 +122,6 @@ class KHSController extends Controller
             'status_verifikasi' => $status_verifikasi
         ]);
 
-        // Pesan berdasarkan status
         if ($status_verifikasi === 'valid') {
             $msg = 'KHS berhasil diunggah dan telah diverifikasi otomatis ✅';
         } elseif ($status_verifikasi === 'invalid') {

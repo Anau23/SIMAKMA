@@ -54,8 +54,6 @@ class DosenController extends Controller
                 ->withInput()
                 ->with('error', $errorMessage);
         }
-
-        // Create user
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -63,8 +61,6 @@ class DosenController extends Controller
             'role' => 'dosen',
             'status' => 'aktif'
         ]);
-
-        // Create dosen
         Dosen::create([
             'user_id' => $user->id,
             'prodi_id' => $request->prodi_id,
@@ -112,14 +108,10 @@ class DosenController extends Controller
                 ->withInput()
                 ->with('error', $errorMessage);
         }
-
-        // Update user
         $dosen->user->update([
             'name' => $request->name,
             'email' => $request->email,
         ]);
-
-        // Update dosen
         $dosen->update($request->only([
             'prodi_id',
             'nip',

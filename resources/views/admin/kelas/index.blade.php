@@ -2,11 +2,8 @@
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Data Kelas') }}</h2>
     </x-slot>
-
     <div class="py-8 px-4 sm:px-6 lg:px-8">
         <div class="max-w-6xl mx-auto bg-white shadow rounded-lg p-6">
-
-            {{-- Pencarian & Tombol Tambah --}}
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3">
                 <form action="{{ route('admin.kelas.index') }}" method="GET" class="flex gap-2">
                     <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari nama atau ruang..."
@@ -15,11 +12,9 @@
                 </form>
                 <a href="{{ route('admin.kelas.create') }}"
                     class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm font-medium">
-                    + Tambah Kelas
+                    Tambah Kelas
                 </a>
             </div>
-
-            {{-- Tabel Desktop --}}
             <div class="overflow-x-auto hidden md:block">
                 <table class="min-w-full border border-gray-200 text-sm text-gray-600">
                     <thead class="bg-gray-100 text-gray-700">
@@ -60,8 +55,6 @@
                     </tbody>
                 </table>
             </div>
-
-            {{-- Card Mobile --}}
             <div class="md:hidden space-y-4">
                 @forelse ($kelas as $k)
                     <div class="border rounded-lg p-4 shadow-sm">
@@ -85,8 +78,6 @@
                     <p class="text-center text-gray-500">Tidak ada data</p>
                 @endforelse
             </div>
-
-            {{-- Pagination --}}
             <div class="mt-4">
                 {{ $kelas->links() }}
             </div>

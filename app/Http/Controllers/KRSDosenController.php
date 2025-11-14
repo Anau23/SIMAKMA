@@ -50,7 +50,6 @@ class KRSDosenController extends Controller
 
         DB::beginTransaction();
         try {
-            // Get all pending KRS for this mahasiswa
             $krsList = Kr::where('mahasiswa_id', $mahasiswa->id)
                 ->where('status', 'pending')
                 ->with('matkul')
@@ -65,23 +64,17 @@ class KRSDosenController extends Controller
             $failedMatkuls = [];
 
             foreach ($krsList as $krs) {
-                // Cari jadwal yang tersedia untuk matkul ini
                 $jadwalAssigned = $this->assignJadwalToMahasiswa($mahasiswa->id, $krs->matkul_id);
 
                 if ($jadwalAssigned) {
-                    // Update KRS status menjadi aktif
                     $krs->update(['status' => 'aktif']);
                     $successCount++;
                 } else {
-                    // Jadwal tidak bisa di-assign (bentrok atau penuh)
                     $failedMatkuls[] = $krs->matkul->name;
-                    // KRS tetap pending atau bisa di-reject
                     Log::warning("Gagal assign jadwal untuk mahasiswa {$mahasiswa->nim} - Matkul: {$krs->matkul->name}");
                 }
             }
-
             DB::commit();
-
             if ($successCount > 0 && empty($failedMatkuls)) {
                 return redirect()->route('dosen.krs.index')
                     ->with('success', "KRS mahasiswa berhasil divalidasi. {$successCount} mata kuliah berhasil dijadwalkan.");
@@ -101,33 +94,24 @@ class KRSDosenController extends Controller
         }
     }
 
-    /**
-     * Assign jadwal mata kuliah ke mahasiswa
-     * Mencari jadwal yang tidak bentrok dan masih ada kapasitas
-     */
     private function assignJadwalToMahasiswa($mahasiswaId, $matkulId)
     {
-        // Ambil semua jadwal yang sudah dimiliki mahasiswa
         $existingJadwals = JadwalKuliah::where('mahasiswa_id', $mahasiswaId)
             ->with('jadwal_matkul')
             ->get();
 
-        // Ambil semua jadwal matkul yang tersedia untuk matkul ini
         $availableJadwals = JadwalMatkul::where('matkul_id', $matkulId)
             ->with(['kela', 'jadwal_kuliahs'])
             ->get();
 
         foreach ($availableJadwals as $jadwal) {
-            // Cek kapasitas kelas
             $currentCount = $jadwal->jadwal_kuliahs->count();
-            $maxKapasitas = $jadwal->kela->kapasitas ?? 40; // Default 40 jika tidak ada
+            $maxKapasitas = $jadwal->kela->kapasitas ?? 40; 
 
             if ($currentCount >= $maxKapasitas) {
                 Log::info("Kelas {$jadwal->kela->name} penuh ({$currentCount}/{$maxKapasitas})");
-                continue; // Kelas penuh, coba jadwal lain
+                continue; 
             }
-
-            // Cek bentrok jadwal
             $isBentrok = false;
             foreach ($existingJadwals as $existing) {
                 if ($this->checkJadwalBentrok($existing->jadwal_matkul, $jadwal)) {
@@ -138,7 +122,6 @@ class KRSDosenController extends Controller
             }
 
             if (!$isBentrok) {
-                // Jadwal tidak bentrok dan masih ada kapasitas, assign!
                 JadwalKuliah::create([
                     'jadwal_matkul_id' => $jadwal->id,
                     'mahasiswa_id' => $mahasiswaId
@@ -149,30 +132,18 @@ class KRSDosenController extends Controller
             }
         }
 
-        return false; // Tidak ada jadwal yang cocok
+        return false; 
     }
 
-    /**
-     * Cek apakah dua jadwal bentrok
-     */
     private function checkJadwalBentrok($jadwal1, $jadwal2)
     {
-        // Cek apakah hari sama
         if ($jadwal1->hari !== $jadwal2->hari) {
             return false;
         }
-
-        // Cek apakah jam bentrok
         $start1 = $jadwal1->jam_mulai;
         $end1 = $jadwal1->jam_selesai;
         $start2 = $jadwal2->jam_mulai;
         $end2 = $jadwal2->jam_selesai;
-
-        // Bentrok jika:
-        // - start2 berada di antara start1 dan end1
-        // - end2 berada di antara start1 dan end1
-        // - start1 berada di antara start2 dan end2
-        // - end1 berada di antara start2 dan end2
         if (
             ($start2 >= $start1 && $start2 < $end1) ||
             ($end2 > $start1 && $end2 <= $end1) ||
