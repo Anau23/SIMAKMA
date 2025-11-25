@@ -31,10 +31,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::apiResource('dosen', DosenController::class);
+    Route::apiResource('mahasiswa', MahasiswaController::class);
+    Route::apiResource('fakultas', FakultasController::class);
+    Route::apiResource('prodi', ProdiController::class);
+    Route::apiResource('kelas', KelasController::class);
+    Route::apiResource('matkul', MatkulController::class);
 });
-
-Route::apiResource('mahasiswa', MahasiswaController::class);
-Route::apiResource('fakultas', FakultasController::class);
-Route::apiResource('prodi', ProdiController::class);
-Route::apiResource('kelas', KelasController::class);
-Route::apiResource('matkul', MatkulController::class);
