@@ -2,6 +2,11 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\MahasiswaController;
+use App\Http\Controllers\Api\ProdiController;
+use App\Http\Controllers\Api\FakultasController;
+use App\Http\Controllers\Api\KelasController;
+use App\Http\Controllers\Api\MatkulController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +22,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::apiResource('mahasiswa', MahasiswaController::class);
+Route::apiResource('fakultas', FakultasController::class);
+Route::apiResource('prodi', ProdiController::class);
+Route::apiResource('kelas', KelasController::class);
+Route::apiResource('matkul', MatkulController::class);
