@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\ProdiController;
 use App\Http\Controllers\Api\FakultasController;
 use App\Http\Controllers\Api\KelasController;
 use App\Http\Controllers\Api\MatkulController;
+use App\Http\Controllers\Api\JadwalKuliahMhsController;
+use App\Http\Controllers\Api\JadwalKuliahController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,4 +38,6 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->name('admin.
     Route::apiResource('prodi', ProdiController::class);
     Route::apiResource('kelas', KelasController::class);
     Route::apiResource('matkul', MatkulController::class);
+    Route::apiResource('jadwal-kuliah', JadwalKuliahController::class);
+    Route::apiResource('jadwal-kuliah-mhs', JadwalKuliahMhsController::class);
 });
