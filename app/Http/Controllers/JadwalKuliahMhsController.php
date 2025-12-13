@@ -10,7 +10,7 @@ class JadwalKuliahMhsController extends Controller
 {
     public function index(Request $request)
     {
-        $mahasiswa = Auth::user()->mahasiswas->first();
+        $mahasiswa = Auth::user()->mahasiswas;
         $angkatan = (int) substr($mahasiswa->tahun_akademik, 0, 4);
         $tahunSekarang = date('Y');
         $selisihTahun = $tahunSekarang - $angkatan;

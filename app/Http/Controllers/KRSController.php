@@ -7,12 +7,14 @@ use App\Models\Kr;
 use App\Models\Matkul;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session; // Tambahkan ini
 
 class KRSController extends Controller
 {
     public function index()
     {
-        $mahasiswa = Auth::user()->mahasiswas->first();
+        
+        $mahasiswa = Auth::user()->mahasiswas;
 
         $angkatan = (int) substr($mahasiswa->tahun_akademik, 0, 4);
         $tahunSekarang = date('Y');
@@ -64,7 +66,7 @@ class KRSController extends Controller
 
     public function addTemp(Request $request)
     {
-        $mahasiswa = Auth::user()->mahasiswas->first();
+        $mahasiswa = Auth::user()->mahasiswas;
 
         $request->validate([
             'matkul_id' => 'required|exists:matkuls,id',
@@ -132,7 +134,7 @@ class KRSController extends Controller
 
     public function finalize()
     {
-        $mahasiswa = Auth::user()->mahasiswas->first();
+        $mahasiswa = Auth::user()->mahasiswas;
         $tempKRSIds = session('temp_krs', []);
 
         if (empty($tempKRSIds)) {

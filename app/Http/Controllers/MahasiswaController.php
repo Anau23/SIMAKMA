@@ -17,7 +17,6 @@ class MahasiswaController extends Controller
         $search = $request->input('search');
 
         $query = Mahasiswa::with(['user', 'dosen', 'prodi']);
-        $query = Mahasiswa::with(['user', 'dosen', 'prodi']);
 
         if ($search) {
             $query->whereHas('user', function ($q) use ($search) {

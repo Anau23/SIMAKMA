@@ -27,7 +27,7 @@ class KHSController extends Controller
 
     public function create()
     {
-        $mahasiswa = Auth::user()->mahasiswas->first();
+        $mahasiswa = Auth::user()->mahasiswas;
         return view('mahasiswa.khs.create', compact('mahasiswa'));
     }
 
@@ -58,7 +58,7 @@ class KHSController extends Controller
                 ->withInput()
                 ->with('error', $errorMessage);
         }
-        $mahasiswa = Auth::user()->mahasiswas->first();
+        $mahasiswa = Auth::user()->mahasiswas;
         $file = $request->file('khs_file');
         $extension = $file->getClientOriginalExtension();
         $fileName = time() . '_' . $mahasiswa->nim . '.' . $extension;

@@ -11,7 +11,7 @@ class JadwalKuliahMhsController extends Controller
 {
     public function index(Request $request)
     {
-        $mahasiswa = Auth::user()->mahasiswas->first();
+        $mahasiswa = Auth::user()->mahasiswas;
 
         if (!$mahasiswa) {
             return response()->json([
