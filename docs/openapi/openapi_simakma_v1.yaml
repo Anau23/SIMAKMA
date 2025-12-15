@@ -1,0 +1,300 @@
+openapi: 3.0.3
+
+info:
+  title: SIMAKMA API
+  description: API Sistem Manajemen KRS Mahasiswa
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000/api
+    description: Local server
+
+paths:
+  /login:
+    post:
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        "200":
+          description: Login berhasil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        "401":
+          description: Email atau password salah
+
+  /register:
+    post:
+      summary: Register user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        "201":
+          description: Register berhasil
+        "422":
+          description: Validasi gagal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /logout:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Logout user
+      responses:
+        "200":
+          description: Logout berhasil
+
+  /me:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Ambil data user login
+      responses:
+        "200":
+          description: OK
+
+  /admin/mahasiswa:
+    get:
+      security:
+        - bearerAuth: []
+      summary: List mahasiswa
+      responses:
+        "200":
+          description: OK
+    post:
+      security:
+        - bearerAuth: []
+      summary: Tambah mahasiswa
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Mahasiswa'
+      responses:
+        "201":
+          description: Mahasiswa berhasil ditambahkan
+        "422":
+          description: Validasi gagal
+
+  /admin/mahasiswa/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Detail mahasiswa
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Tidak ditemukan
+    put:
+      security:
+        - bearerAuth: []
+      summary: Update mahasiswa
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Update berhasil
+    delete:
+      security:
+        - bearerAuth: []
+      summary: Hapus mahasiswa
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Hapus berhasil
+
+  /admin/matkul:
+    get:
+      security:
+        - bearerAuth: []
+      summary: List mata kuliah
+      responses:
+        "200":
+          description: OK
+    post:
+      security:
+        - bearerAuth: []
+      summary: Tambah mata kuliah
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Matkul'
+      responses:
+        "201":
+          description: Mata kuliah berhasil ditambahkan
+
+  /admin/matkul/{id}:
+    put:
+      security:
+        - bearerAuth: []
+      summary: Update mata kuliah
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Update berhasil
+    delete:
+      security:
+        - bearerAuth: []
+      summary: Hapus mata kuliah
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Hapus berhasil
+
+  /admin/prodi:
+    get:
+      security:
+        - bearerAuth: []
+      summary: List prodi
+      responses:
+        "200":
+          description: OK
+    post:
+      security:
+        - bearerAuth: []
+      summary: Tambah prodi
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Prodi'
+      responses:
+        "201":
+          description: Prodi berhasil ditambahkan
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        token:
+          type: string
+        token_type:
+          type: string
+          example: Bearer
+
+    RegisterRequest:
+      type: object
+      required: [name, email, password]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    Mahasiswa:
+      type: object
+      properties:
+        nim:
+          type: string
+        angkatan:
+          type: string
+        alamat:
+          type: string
+        no_telp:
+          type: string
+        gender:
+          type: string
+          enum: [L, P]
+        religion:
+          type: string
+        tahun_akademik:
+          type: string
+
+    Matkul:
+      type: object
+      properties:
+        kode_mk:
+          type: string
+        name:
+          type: string
+        sks:
+          type: integer
+        semester:
+          type: integer
+        prodi_id:
+          type: integer
+        dosen_id:
+          type: integer
+
+    Prodi:
+      type: object
+      properties:
+        fakultas_id:
+          type: integer
+        name:
+          type: string
+
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: object
