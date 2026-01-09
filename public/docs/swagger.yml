@@ -1,0 +1,283 @@
+openapi: 3.0.3
+
+info:
+  title: SIMAKMA API
+  description: >
+    API Sistem Manajemen KRS Mahasiswa (SIMAKMA).
+    Mengelola proses pengisian KRS oleh mahasiswa,
+    finalisasi KRS, serta validasi oleh dosen wali.
+  version: 1.0.0
+
+servers:
+  - url: http://127.0.0.1:8000/api
+    description: Local Development Server
+
+tags:
+  - name: Auth
+    description: Autentikasi dan otorisasi pengguna
+  - name: Mahasiswa
+    description: Proses KRS oleh mahasiswa
+  - name: Dosen Wali
+    description: Validasi KRS oleh dosen wali
+  - name: Admin
+    description: Manajemen data akademik
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: 2318006@student.itn.ac.id
+        password:
+          type: string
+          example: rahasia123
+
+    KrsAturanRequest:
+      type: object
+      required:
+        - ip
+      properties:
+        ip:
+          type: number
+          format: float
+          example: 3.5
+
+    KrsCreateRequest:
+      type: object
+      required:
+        - ip
+        - semester
+        - tahun_ajaran
+        - jadwal_matkul_ids
+      properties:
+        ip:
+          type: number
+          example: 3.5
+        semester:
+          type: integer
+          example: 1
+        tahun_ajaran:
+          type: string
+          example: 2024/2025
+        jadwal_matkul_ids:
+          type: array
+          items:
+            type: integer
+          example: [1, 2]
+
+    KrsResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        mahasiswa_id:
+          type: integer
+          example: 2
+        semester:
+          type: integer
+          example: 1
+        tahun_ajaran:
+          type: string
+          example: 2024/2025
+        status:
+          type: string
+          example: draft
+
+security:
+  - bearerAuth: []
+
+paths:
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login pengguna
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login berhasil
+        '401':
+          description: Email atau password salah
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout pengguna
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logout berhasil
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Ambil data user login
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Data user aktif
+
+  /mahasiswa/krs/aturan:
+    post:
+      tags: [Mahasiswa]
+      summary: Hitung batas maksimal SKS berdasarkan IP
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KrsAturanRequest'
+      responses:
+        '200':
+          description: Batas SKS berhasil dihitung
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  batas_sks:
+                    type: integer
+                    example: 24
+        '422':
+          description: Validasi gagal
+
+  /mahasiswa/krs:
+    post:
+      tags: [Mahasiswa]
+      summary: Membuat KRS (status draft)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KrsCreateRequest'
+      responses:
+        '201':
+          description: KRS berhasil dibuat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KrsResponse'
+        '422':
+          description: Validasi gagal
+
+    get:
+      tags: [Mahasiswa]
+      summary: Melihat status KRS mahasiswa
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Data KRS mahasiswa
+
+  /mahasiswa/krs/{id}/finalisasi:
+    post:
+      tags: [Mahasiswa]
+      summary: Finalisasi KRS
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: KRS berhasil difinalisasi
+        '404':
+          description: KRS tidak ditemukan
+
+  /dosen-wali/krs:
+    get:
+      tags: [Dosen Wali]
+      summary: Melihat daftar KRS mahasiswa bimbingan
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Daftar KRS mahasiswa
+
+  /dosen-wali/krs/{id}/approve:
+    post:
+      tags: [Dosen Wali]
+      summary: Menyetujui KRS mahasiswa
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: KRS disetujui
+
+  /dosen-wali/krs/{id}/reject:
+    post:
+      tags: [Dosen Wali]
+      summary: Menolak KRS mahasiswa
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: KRS ditolak
+
+  /admin/mahasiswa:
+    get:
+      tags: [Admin]
+      summary: Melihat daftar mahasiswa
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Data mahasiswa
+
+    post:
+      tags: [Admin]
+      summary: Menambahkan mahasiswa
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Mahasiswa berhasil ditambahkan
+
+  /admin/matkul:
+    get:
+      tags: [Admin]
+      summary: Melihat daftar mata kuliah
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Data mata kuliah
